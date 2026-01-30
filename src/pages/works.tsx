@@ -38,7 +38,7 @@ interface Work {
 export default function Works() {
   const [currentSection, setCurrentSection] = useState(0);
   const [scrollContainer, setScrollContainer] = useState<HTMLDivElement | null>(
-    null
+    null,
   );
   // 添加图片弹窗状态
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
@@ -228,7 +228,7 @@ export default function Works() {
                               {feature}
                             </span>
                           </div>
-                        )
+                        ),
                       )}
                     </div>
                   </div>
@@ -359,7 +359,7 @@ export default function Works() {
                               )}
                             </div>
                           </div>
-                        )
+                        ),
                       )}
                     </div>
                   </div>
@@ -597,7 +597,7 @@ export default function Works() {
               <div className="flex justify-center gap-4 md:gap-6">
                 <button
                   onClick={() =>
-                    window.open("https://github.com/996wuxian", "_blank")
+                    window.open("https://github.com/Max-Samson", "_blank")
                   }
                   className="bg-[rgba(0,0,0,.5)] hover:bg-[rgba(0,0,0,.7)] rounded-xl p-2 md:p-3 cursor-pointer transition-all duration-300 backdrop-blur-sm border border-[rgba(255,255,255,0.2)] group"
                 >
