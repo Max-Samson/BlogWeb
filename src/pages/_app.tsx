@@ -331,12 +331,19 @@ function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const [isAnimatingOut, setIsAnimatingOut] = useState(false);
+  const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
-    // 模拟加载时间，3秒后隐藏加载动画
+    // 模拟加载时间，2.5秒后开始淡出动画
     const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+      setIsAnimatingOut(true);
+      // 淡出动画持续 500ms，然后完全隐藏
+      setTimeout(() => {
+        setIsLoading(false);
+        setShowContent(true);
+      }, 2000);
+    }, 2800);
 
     return () => clearTimeout(timer);
   }, []);
@@ -344,12 +351,14 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider>
       {/* 全局加载动画 */}
-      <LoadingAnimation isVisible={isLoading} />
+      <LoadingAnimation isVisible={isLoading} isAnimatingOut={isAnimatingOut} />
 
       {/* 布局组件包装页面内容 */}
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <div className={showContent ? "animate-fade-in" : "opacity-0"}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </div>
     </ThemeProvider>
   );
 }

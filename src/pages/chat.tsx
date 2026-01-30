@@ -127,8 +127,8 @@ export default function ChatPage() {
             socketId: string,
             callback: (
               error: Error | null,
-              data: PusherAuthResponse | null
-            ) => void
+              data: PusherAuthResponse | null,
+            ) => void,
           ) => {
             fetch("/api/pusher/auth", {
               method: "POST",
@@ -163,15 +163,9 @@ export default function ChatPage() {
     pusherRef.current.connection.bind("connected", () => {
       console.log(
         "Pusher connected, connection ID:",
-        pusherRef.current?.connection.socket_id
+        pusherRef.current?.connection.socket_id,
       );
       setIsConnected(true);
-      // 连接成功后立即尝试订阅当前房间
-      if (currentRoom) {
-        subscribeToRoom(currentRoom.id);
-        // 添加这行：连接成功后加载当前房间的消息
-        fetchMessages(currentRoom.id);
-      }
     });
 
     pusherRef.current.connection.bind("disconnected", () => {
@@ -192,9 +186,9 @@ export default function ChatPage() {
           "Pusher state change:",
           states.previous,
           "→",
-          states.current
+          states.current,
         );
-      }
+      },
     );
 
     return () => {
@@ -220,7 +214,7 @@ export default function ChatPage() {
     if (channelRef.current) {
       console.log(
         "Unsubscribing from previous channel:",
-        channelRef.current.name
+        channelRef.current.name,
       );
       channelRef.current.unbind_all();
       pusherRef.current.unsubscribe(channelRef.current.name);
@@ -230,7 +224,7 @@ export default function ChatPage() {
     const channelName = `presence-chat-room-${roomId}`;
     console.log("Subscribing to presence channel:", channelName);
     channelRef.current = pusherRef.current.subscribe(
-      channelName
+      channelName,
     ) as PresenceChannel;
 
     channelRef.current.bind("new-message", (data: Message) => {
@@ -248,10 +242,10 @@ export default function ChatPage() {
       // 更新房间列表中当前房间的消息数量
       setRooms((prevRooms) =>
         prevRooms.map((room) =>
-          room.id === currentRoom?.id
+          room.id === roomId
             ? { ...room, _count: { messages: room._count.messages + 1 } }
-            : room
-        )
+            : room,
+        ),
       );
     });
 
@@ -261,12 +255,12 @@ export default function ChatPage() {
       (members: PusherMembers) => {
         console.log(
           "Successfully subscribed to presence channel:",
-          channelName
+          channelName,
         );
         console.log("Current members:", members);
         setOnlineUsers(members.count);
         setOnlineUsersList(Object.values(members.members));
-      }
+      },
     );
 
     channelRef.current.bind("pusher:member_added", (member: PusherMember) => {
@@ -279,7 +273,7 @@ export default function ChatPage() {
       console.log("Member removed:", member);
       setOnlineUsers((prev) => Math.max(0, prev - 1));
       setOnlineUsersList((prev) =>
-        prev.filter((user) => user.id !== member.id)
+        prev.filter((user) => user.id !== member.id),
       );
     });
 
@@ -307,14 +301,10 @@ export default function ChatPage() {
       return;
     }
 
-    // 如果Pusher已连接，立即订阅
-    if (pusherRef.current?.connection.state === "connected") {
-      subscribeToRoom(currentRoom.id);
-    }
-
+    subscribeToRoom(currentRoom.id);
     // 加载历史消息
     fetchMessages(currentRoom.id);
-  }, [currentRoom, subscribeToRoom]);
+  }, [currentRoom]);
 
   const fetchRooms = async () => {
     try {
@@ -415,8 +405,8 @@ export default function ChatPage() {
         prevRooms.map((room) =>
           room.id === currentRoom.id
             ? { ...room, _count: { messages: room._count.messages + 1 } }
-            : room
-        )
+            : room,
+        ),
       );
 
       setNewMessage("");

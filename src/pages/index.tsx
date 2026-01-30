@@ -59,7 +59,8 @@ export default function Home() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const fullText = "Hello, I'm wuxian";
+  //首页介绍
+  const fullText = "Hello, I'm XiaoShuai";
 
   // 打字机动画效果
   useEffect(() => {
@@ -94,7 +95,7 @@ export default function Home() {
           }
         }
       },
-      isDeleting ? deleteSpeed : typeSpeed
+      isDeleting ? deleteSpeed : typeSpeed,
     );
 
     return () => clearTimeout(timer);

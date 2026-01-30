@@ -2,13 +2,19 @@ import React from "react";
 
 interface LoadingAnimationProps {
   isVisible: boolean;
+  isAnimatingOut?: boolean;
 }
 
-const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ isVisible }) => {
+const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
+  isVisible,
+  isAnimatingOut = false,
+}) => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-500 ${isAnimatingOut ? "opacity-0" : "opacity-100"}`}
+    >
       <div className="loader">
         {/* 渐变定义 */}
         <svg height="0" width="0" viewBox="0 0 64 64" className="absolute">
@@ -88,49 +94,40 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ isVisible }) => {
               <stop stopColor="#FFD93D" />
               <stop stopColor="#FF6B6B" offset="1" />
             </linearGradient>
+            <linearGradient
+              gradientUnits="userSpaceOnUse"
+              y2="2"
+              x2="0"
+              y1="62"
+              x1="0"
+              id="h"
+            >
+              <stop stopColor="#E056FD" />
+              <stop stopColor="#686AED" offset="1" />
+            </linearGradient>
+            <linearGradient
+              gradientUnits="userSpaceOnUse"
+              y2="2"
+              x2="0"
+              y1="62"
+              x1="0"
+              id="i"
+            >
+              <stop stopColor="#F9CA24" />
+              <stop stopColor="#F0932B" offset="1" />
+            </linearGradient>
+            <linearGradient
+              gradientUnits="userSpaceOnUse"
+              y2="2"
+              x2="0"
+              y1="62"
+              x1="0"
+              id="j"
+            >
+              <stop stopColor="#6AB04C" />
+              <stop stopColor="#BADc58" offset="1" />
+            </linearGradient>
           </defs>
-        </svg>
-
-        {/* W */}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 64 64"
-          height="64"
-          width="64"
-          className="inline-block"
-        >
-          <path
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            strokeWidth="8"
-            stroke="url(#b)"
-            d="M 4,8 L 16,48 L 28,12 L 40,48 L 52,8"
-            className="dash"
-            id="w"
-            pathLength="360"
-          />
-        </svg>
-
-        {/* U */}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 64 64"
-          height="64"
-          width="64"
-          className="inline-block"
-        >
-          <path
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            strokeWidth="8"
-            stroke="url(#c)"
-            d="M 12,8 L 12,40 Q 12,52 24,52 L 40,52 Q 52,52 52,40 L 52,8"
-            className="dash"
-            id="u1"
-            pathLength="360"
-          />
         </svg>
 
         {/* X */}
@@ -146,15 +143,54 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ isVisible }) => {
             strokeLinejoin="round"
             strokeLinecap="round"
             strokeWidth="8"
-            stroke="url(#d)"
+            stroke="url(#b)"
             d="M 12,12 L 52,52 M 52,12 L 12,52"
             className="dash"
-            id="x"
             pathLength="360"
           />
         </svg>
 
-        {/* I */}
+        {/* i */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 64 64"
+          height="64"
+          width="64"
+          className="inline-block"
+        >
+          <path
+            strokeLinejoin="round"
+            strokeLinecap="round"
+            strokeWidth="8"
+            stroke="url(#c)"
+            d="M 32,12 L 32,16 M 32,24 L 32,52"
+            className="dash"
+            pathLength="360"
+          />
+        </svg>
+
+        {/* a */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 64 64"
+          height="64"
+          width="64"
+          className="inline-block"
+        >
+          <path
+            strokeLinejoin="round"
+            strokeLinecap="round"
+            strokeWidth="8"
+            stroke="url(#d)"
+            d="M 16,52 L 16,32 Q 16,20 28,20 L 40,20 Q 48,20 48,32 L 48,52 M 16,40 L 48,40"
+            className="dash"
+            pathLength="360"
+          />
+        </svg>
+
+        {/* o */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -168,14 +204,13 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ isVisible }) => {
             strokeLinecap="round"
             strokeWidth="8"
             stroke="url(#e)"
-            d="M 20,12 L 44,12 M 32,12 L 32,52 M 20,52 L 44,52"
+            d="M 12,32 Q 12,12 32,12 Q 52,12 52,32 Q 52,52 32,52 Q 12,52 12,32"
             className="dash"
-            id="i"
             pathLength="360"
           />
         </svg>
 
-        {/* A */}
+        {/* S */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -189,14 +224,13 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ isVisible }) => {
             strokeLinecap="round"
             strokeWidth="8"
             stroke="url(#f)"
-            d="M 12,52 L 32,12 L 52,52 M 20,36 L 44,36"
+            d="M 48,16 Q 48,8 32,8 Q 12,8 12,20 Q 12,28 32,32 Q 52,36 52,44 Q 52,56 32,56 Q 12,56 12,48"
             className="dash"
-            id="a"
             pathLength="360"
           />
         </svg>
 
-        {/* N */}
+        {/* h */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -210,9 +244,68 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ isVisible }) => {
             strokeLinecap="round"
             strokeWidth="8"
             stroke="url(#g)"
-            d="M 12,52 L 12,12 L 52,52 L 52,12"
+            d="M 16,12 L 16,52 M 16,32 Q 16,20 32,20 Q 48,20 48,32 L 48,52"
             className="dash"
-            id="n"
+            pathLength="360"
+          />
+        </svg>
+
+        {/* u */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 64 64"
+          height="64"
+          width="64"
+          className="inline-block"
+        >
+          <path
+            strokeLinejoin="round"
+            strokeLinecap="round"
+            strokeWidth="8"
+            stroke="url(#h)"
+            d="M 12,20 L 12,52 Q 12,52 32,52 Q 52,52 52,40 L 52,20"
+            className="dash"
+            pathLength="360"
+          />
+        </svg>
+
+        {/* a */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 64 64"
+          height="64"
+          width="64"
+          className="inline-block"
+        >
+          <path
+            strokeLinejoin="round"
+            strokeLinecap="round"
+            strokeWidth="8"
+            stroke="url(#i)"
+            d="M 16,52 L 16,32 Q 16,20 28,20 L 40,20 Q 48,20 48,32 L 48,52 M 16,40 L 48,40"
+            className="dash"
+            pathLength="360"
+          />
+        </svg>
+
+        {/* i */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 64 64"
+          height="64"
+          width="64"
+          className="inline-block"
+        >
+          <path
+            strokeLinejoin="round"
+            strokeLinecap="round"
+            strokeWidth="8"
+            stroke="url(#j)"
+            d="M 32,12 L 32,16 M 32,24 L 32,52"
+            className="dash"
             pathLength="360"
           />
         </svg>
@@ -226,7 +319,8 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ isVisible }) => {
         }
 
         .dash {
-          animation: dashArray 2s ease-in-out infinite,
+          animation:
+            dashArray 2s ease-in-out infinite,
             dashOffset 2s linear infinite;
         }
 
