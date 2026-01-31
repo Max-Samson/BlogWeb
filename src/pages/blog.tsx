@@ -110,7 +110,7 @@ const DirectoryItem = React.memo(
         </div>
       );
     }
-  }
+  },
 );
 
 DirectoryItem.displayName = "DirectoryItem";
@@ -145,7 +145,7 @@ const TypewriterText = ({ text }: { text: string }) => {
           }
         }
       },
-      isDeleting ? deleteSpeed : typeSpeed
+      isDeleting ? deleteSpeed : typeSpeed,
     );
 
     return () => clearTimeout(timer);
@@ -179,10 +179,10 @@ const TypewriterText = ({ text }: { text: string }) => {
 export default function Blog() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedArticle, setSelectedArticle] = useState<BlogArticle | null>(
-    null
+    null,
   );
   const [tableOfContents, setTableOfContents] = useState<TableOfContentsItem[]>(
-    []
+    [],
   );
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [articles, setArticles] = useState<BlogArticle[]>([]);
@@ -208,7 +208,7 @@ export default function Blog() {
       if (!ticking) {
         requestAnimationFrame(() => {
           const scrollContainer = document.querySelector(
-            ".custom-scrollbar"
+            ".custom-scrollbar",
           ) as HTMLElement;
           if (!scrollContainer) return;
 
@@ -256,7 +256,7 @@ export default function Blog() {
           // 特殊处理：如果没有标题在阈值内，选择最接近顶部的可见标题
           if (bestHeading.top > threshold) {
             const visibleHeadings = headings.filter(
-              (h) => h.top >= 0 && h.top <= containerHeight
+              (h) => h.top >= 0 && h.top <= containerHeight,
             );
             if (visibleHeadings.length > 0) {
               bestHeading = visibleHeadings[0];
@@ -352,7 +352,7 @@ export default function Blog() {
 
   // 添加折叠状态管理
   const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
 
   // 切换文件夹折叠状态
@@ -420,7 +420,7 @@ export default function Blog() {
       article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       article.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       article.tags.some((tag) =>
-        tag.toLowerCase().includes(searchTerm.toLowerCase())
+        tag.toLowerCase().includes(searchTerm.toLowerCase()),
       );
 
     const matchesCategory =
@@ -568,7 +568,7 @@ export default function Blog() {
               >
                 {currentCodeContent}
               </SyntaxHighlighter>
-            </div>
+            </div>,
           );
         }
         return;
@@ -595,7 +595,7 @@ export default function Blog() {
             className="text-3xl font-bold mb-4 text-white mt-8 first:mt-0"
           >
             {line.replace("# ", "")}
-          </h1>
+          </h1>,
         );
       } else if (line.startsWith("## ")) {
         const id = `heading-${headingIndex}`; // 使用计数器生成 ID
@@ -607,7 +607,7 @@ export default function Blog() {
             className="text-2xl font-bold mb-3 text-white mt-6"
           >
             {line.replace("## ", "")}
-          </h2>
+          </h2>,
         );
       } else if (line.startsWith("### ")) {
         const id = `heading-${headingIndex}`; // 使用计数器生成 ID
@@ -619,14 +619,14 @@ export default function Blog() {
             className="text-xl font-bold mb-2 text-white mt-4"
           >
             {line.replace("### ", "")}
-          </h3>
+          </h3>,
         );
       } else if (line.trim() && !line.startsWith("`")) {
         // 普通段落
         elements.push(
           <p key={index} className="mb-4 text-gray-300 leading-relaxed">
             {line}
-          </p>
+          </p>,
         );
       } else if (!line.trim()) {
         elements.push(<br key={index} />);
@@ -757,7 +757,7 @@ export default function Blog() {
                           {category === "全部"
                             ? articles.length
                             : articles.filter(
-                                (article) => article.category === category
+                                (article) => article.category === category,
                               ).length}
                         </span>
                       </button>
@@ -818,7 +818,7 @@ export default function Blog() {
                           {category === "全部"
                             ? articles.length
                             : articles.filter(
-                                (article) => article.category === category
+                                (article) => article.category === category,
                               ).length}
                         </span>
                       </button>
@@ -973,7 +973,7 @@ export default function Blog() {
                                   </span>
                                 </div>
                               </div>
-                            )
+                            ),
                           )}
                         </div>
                       </div>
@@ -995,7 +995,7 @@ export default function Blog() {
                                     collapsedFolders={collapsedFolders}
                                     toggleFolder={toggleFolder}
                                   />
-                                )
+                                ),
                               )}
                             </div>
                           ) : (
@@ -1093,10 +1093,10 @@ export default function Blog() {
                                     activeHeading === item.id
                                       ? "text-[#214362] font-semibold"
                                       : item.level === 1
-                                      ? "text-white font-medium"
-                                      : item.level === 2
-                                      ? "text-gray-300 ml-4"
-                                      : "text-gray-400 ml-8"
+                                        ? "text-white font-medium"
+                                        : item.level === 2
+                                          ? "text-gray-300 ml-4"
+                                          : "text-gray-400 ml-8"
                                   }`}
                                 >
                                   {activeHeading === item.id && (
@@ -1125,10 +1125,10 @@ export default function Blog() {
                                 activeHeading === item.id
                                   ? "text-[#1E2939] font-semibold pl-4"
                                   : item.level === 1
-                                  ? "text-white font-medium"
-                                  : item.level === 2
-                                  ? "text-gray-300 ml-4"
-                                  : "text-gray-400 ml-8"
+                                    ? "text-white font-medium"
+                                    : item.level === 2
+                                      ? "text-gray-300 ml-4"
+                                      : "text-gray-400 ml-8"
                               }`}
                             >
                               {activeHeading === item.id && (

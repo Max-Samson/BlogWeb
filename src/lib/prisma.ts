@@ -21,7 +21,25 @@ const globalForPrisma = globalThis as unknown as {
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
-    log: ["query"],
+    log: process.env.NODE_ENV === "development" ? ["query", "error"] : ["error"],
+    // 增加 Neon 连接超时时间
+    datasources: {
+      db: {
+        url: process.env.DATABASE_URL,
+      },
+    },
   });
+
+// 测试数据库连接
+export async function testConnection() {
+  try {
+    await prisma.$connect();
+    console.log("✅ 数据库连接成功");
+    return true;
+  } catch (error) {
+    console.error("❌ 数据库连接失败:", error);
+    return false;
+  }
+}
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;

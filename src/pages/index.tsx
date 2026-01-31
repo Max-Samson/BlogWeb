@@ -140,7 +140,7 @@ export default function Home() {
     setImageModal({
       isOpen: true,
       title: "QQ",
-      images: ["/images/qq.jpg"],
+      images: ["/images/qq.png"],
       danmakuText: "联系我",
       enableDanmaku: true,
       imageWidth: 500,
@@ -150,49 +150,34 @@ export default function Home() {
 
   const tags = [
     {
-      name: "做饭",
+      name: "编程",
     },
     {
       name: "摄影",
     },
     {
-      name: "五哈",
+      name: "旅行",
     },
     {
       name: "美食",
     },
     {
-      name: "沧元图",
-    },
-    {
       name: "音乐",
     },
     {
-      name: "蜡笔小新",
-    },
-    {
-      name: "英雄联盟手游",
-    },
-    {
-      name: "天空中的歌",
-    },
-    {
-      name: "鲜花",
-    },
-    {
-      name: "枕刀歌",
-    },
-    {
-      name: "镖人",
+      name: "英雄联盟",
     },
     {
       name: "不良人",
     },
     {
-      name: "不良人天罡传",
+      name: "斗罗大陆",
     },
     {
-      name: "鬼灭之刃",
+      name: "无耻之徒(Shameless)",
+    },
+    {
+      name: "惊奇物语(Stranger Things)",
     },
   ];
 
@@ -201,8 +186,9 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>首页 - wuxian&apos;s web</title>
-        <meta name="description" content="wuxian的个人网站首页" />
+        <title>首页 - XiaoShuai&apos;s web</title>
+        <meta name="description" content="XiaoShuai的个人网站首页" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="relative">
         {/* 弹窗组件 */}
@@ -271,7 +257,7 @@ export default function Home() {
                         return (
                           <span
                             key={wordIndex}
-                            className="bg-gradient-to-br from-[#1b2c55] to-[#3d85a9] bg-clip-text text-transparent"
+                            className="bg-gradient-to-br from-[#FF8C00] to-[#FF416C] bg-clip-text text-transparent"
                           >
                             {word}
                           </span>
@@ -286,23 +272,23 @@ export default function Home() {
                         </span>
                       );
                     })}
-                    <span className="animate-pulse text-[#3d85a9]">|</span>
+                    <span className="animate-pulse text-[#FF416C]">|</span>
                   </span>
                 </div>
                 <div className="text-shadow-sm text-[#fff] text-[14px] md:text-[16px]">
-                  <span className="bg-gradient-to-br from-[#1b2c55] to-[#3d85a9] bg-clip-text text-transparent text-[16px] md:text-[18px]">
+                  <span className="bg-gradient-to-br from-[#FF8C00] to-[#FF416C] bg-clip-text text-transparent text-[16px] md:text-[18px]">
                     Front-end
                   </span>{" "}
                   development (前端开发工程师)
                 </div>
                 <div className="text-shadow-sm text-[#fff] text-[14px] md:text-[16px]">
-                  <span className="bg-gradient-to-br from-[#1b2c55] to-[#3d85a9] bg-clip-text text-transparent text-[16px] md:text-[18px]">
+                  <span className="bg-gradient-to-br from-[#FF8C00] to-[#FF416C] bg-clip-text text-transparent text-[16px] md:text-[18px]">
                     22
                   </span>{" "}
                   years old (22岁)
                 </div>
                 <div className="text-shadow-sm text-[#fff] text-[14px] md:text-[16px]">
-                  <span className="bg-gradient-to-br from-[#1b2c55] to-[#3d85a9] bg-clip-text text-transparent text-[16px] md:text-[18px]">
+                  <span className="bg-gradient-to-br from-[#FF8C00] to-[#FF416C] bg-clip-text text-transparent text-[16px] md:text-[18px]">
                     2.5
                   </span>{" "}
                   work experience (2.5年工作经验)
@@ -405,7 +391,7 @@ export default function Home() {
                             ></div>
                             {/* 连接线 */}
                             {index < express.length - 1 && (
-                              <div className="w-[2px] h-[40px] bg-gradient-to-b from-[#1b2c55] to-[#3d85a9] mt-[5px]"></div>
+                              <div className="w-[2px] h-[40px] bg-gradient-to-b from-[#FF8C00] to-[#FF416C] mt-[5px]"></div>
                             )}
                           </div>
 

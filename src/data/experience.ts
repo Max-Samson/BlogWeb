@@ -7,15 +7,15 @@ export interface ExperienceItem {
 // 经历数据
 export const experienceData: ExperienceItem[] = [
   {
-    name: "经历1",
-    date: "2021-2023",
+    name: "武汉东湖学院",
+    date: "2022-至今",
   },
   {
-    name: "经历2",
-    date: "2023-2024",
+    name: "深圳市网旭科技有限公司-初级前端开发工程师",
+    date: "2025-至今",
   },
   {
-    name: "经历3",
-    date: "2024-至今",
+    name: "未来可期",
+    date: "",
   },
 ];

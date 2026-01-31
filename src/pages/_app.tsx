@@ -127,7 +127,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       <div
         className="fixed inset-0 bg-cover bg-center bg-no-repeat blur-sm transition-opacity duration-1000 ease-in-out z-[-1]"
         style={{
-          backgroundImage: `url('/images/img3.jpg')`,
+          backgroundImage: `url('/images/light.png')`,
           opacity: theme === "light" ? 1 : 0,
         }}
       />
@@ -136,7 +136,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       <div
         className="fixed inset-0 bg-cover bg-center bg-no-repeat blur-sm transition-opacity duration-1000 ease-in-out z-[-1]"
         style={{
-          backgroundImage: `url('/images/img2.jpg')`,
+          backgroundImage: `url('/images/dark.jpg')`,
           opacity: theme === "dark" ? 1 : 0,
         }}
       />
@@ -338,12 +338,12 @@ export default function App({ Component, pageProps }: AppProps) {
     // 模拟加载时间，2.5秒后开始淡出动画
     const timer = setTimeout(() => {
       setIsAnimatingOut(true);
-      // 淡出动画持续 500ms，然后完全隐藏
+      // 淡出动画持续 500ms（与 CSS transition 一致）
       setTimeout(() => {
         setIsLoading(false);
         setShowContent(true);
-      }, 2000);
-    }, 2800);
+      }, 500);
+    }, 2500);
 
     return () => clearTimeout(timer);
   }, []);

@@ -136,7 +136,7 @@ export default function Works() {
         isOpen={isQQModalOpen}
         onClose={closeQQModal}
         title="QQ联系方式"
-        images={["/images/qq.jpg"]}
+        images={["/images/qq.png"]}
         enableDanmaku={false}
         imageWidth={300}
         imageHeight={300}
