@@ -1,0 +1,3 @@
+npx --no -- committier edit $1
+# 若有commitlint，保留下方指令，无则可省略
+# npx --no -- commitlint --edit $1
