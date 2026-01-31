@@ -33,7 +33,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@prisma/client": "^6.13.0",
+    "@prisma/client": "^6.19.0",
     "@types/pg": "^8.15.5",
     "@types/react-syntax-highlighter": "^15.5.13",
     "chokidar": "^4.0.3",
