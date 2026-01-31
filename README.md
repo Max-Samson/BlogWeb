@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="/images/dark.jpg" alt="XiaoShuai" width="120" />
+  <img src="public/images/work1.png" alt="BlogWeb"/>
 </p>
 
-<h1 align="center">XiaoShuai's Blog</h1>
+<h1 align="center">BlogWeb</h1>
 
 <p align="center">
   <a href="https://github.com/Max-Samson" target="_blank">
@@ -183,7 +183,7 @@ pnpm generate     # 生成 Prisma 客户端
 1. 如果修改表结构，则需要重新运行 `pnpm run push-db` 命令，将数据库结构推送到 neon 上
 2. 上传到您的 github 仓库时，请将.env 文件添加到.gitignore 文件中
 3. 这个只是基础模板，各位发挥自己的想象创造力打造吧！
-4. 如果遇到不懂的，请在 qq 群内联系我: 916088073
+4. 如果遇到不懂的，可以通过github或者qq联系我
 
 ## Contributing
 
