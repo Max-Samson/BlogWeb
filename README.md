@@ -34,19 +34,22 @@
 - 💬 **实时聊天** - 基于 Pusher 的实时聊天室
 - 📊 **GitHub 热力图** - 展示代码提交活动
 - 📱 **响应式设计** - 完美适配移动端
+- 📄 **PDF 预览** - 支持在线预览 PDF 文件
 - ⚡ **性能优化** - 数据库重试机制，缓存策略
 
 ## Technology Stack
 
-| 技术         | 版本   | 说明              |
-| ------------ | ------ | ----------------- |
-| Next.js      | 15.3.5 | React 框架        |
-| React        | 19.0.0 | UI 库             |
-| TypeScript   | 5.0+   | 类型安全          |
-| Tailwind CSS | 4      | 样式框架          |
-| Prisma       | 6.13.0 | ORM               |
-| Pusher       | 5.2.0  | 实时通信          |
-| Neon         | -      | PostgreSQL 数据库 |
+| 技术         | 版本     | 说明                |
+| ------------ | -------- | ------------------- |
+| Next.js      | 15.3.5   | React 框架         |
+| React        | 19.0.0   | UI 库              |
+| TypeScript   | 5.0+     | 类型安全           |
+| Tailwind CSS | 4        | 样式框架           |
+| Prisma       | 6.13.0   | ORM                |
+| Pusher       | 5.2.0    | 实时通信           |
+| Neon         | -        | PostgreSQL 数据库  |
+| react-pdf    | 10.3.0   | PDF 预览           |
+| pdfjs-dist   | 5.4.530  | PDF 渲染引擎        |
 
 ## Node Version
 

@@ -44,7 +44,7 @@ function parseDirectoryStructure(structureText: string) {
     console.log(
       `第${lineIndex}行: "${line}", 前导空格: ${
         line.length - line.trimStart().length
-      }`
+      }`,
     );
 
     const trimmedLine = line.trim();
@@ -89,7 +89,7 @@ function parseDirectoryStructure(structureText: string) {
       const parent = stack[stack.length - 1];
       parent.children.push(item);
       console.log(
-        `添加到父级 ${parent.name}, 父级现在有 ${parent.children.length} 个子项`
+        `添加到父级 ${parent.name}, 父级现在有 ${parent.children.length} 个子项`,
       );
     }
 

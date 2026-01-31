@@ -6,6 +6,18 @@ import React from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+// 动态导入 PdfViewer 组件（客户端渲染）
+const PdfViewer = dynamic(() => import("@/components/PdfViewer"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center py-12">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      <span className="ml-3 text-gray-600 dark:text-gray-400">加载中...</span>
+    </div>
+  ),
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,6 +53,7 @@ interface DirectoryTreeItem {
   isFolder: boolean;
   level: number;
   children: DirectoryTreeItem[];
+  parentCategory?: string;
 }
 
 interface BlogStats {
@@ -58,13 +71,22 @@ const DirectoryItem = React.memo(
     level = 0,
     collapsedFolders,
     toggleFolder,
+    onFileClick,
+    parentCategory = "",
   }: {
     item: DirectoryTreeItem;
     level?: number;
     collapsedFolders: Set<string>;
     toggleFolder: (folderId: string) => void;
+    onFileClick: (filePath: string, fileName: string, category: string) => void;
+    parentCategory?: string;
   }) => {
     const isCollapsed = collapsedFolders.has(item.id);
+    const isPdfFile = item.name.toLowerCase().endsWith(".pdf");
+    const isMdFile = item.name.toLowerCase().endsWith(".md");
+
+    // 当前类别
+    const currentCategory = item.isFolder ? item.name : parentCategory;
 
     if (item.isFolder) {
       return (
@@ -93,6 +115,8 @@ const DirectoryItem = React.memo(
                   level={level + 1}
                   collapsedFolders={collapsedFolders}
                   toggleFolder={toggleFolder}
+                  onFileClick={onFileClick}
+                  parentCategory={currentCategory}
                 />
               ))}
             </div>
@@ -102,10 +126,21 @@ const DirectoryItem = React.memo(
     } else {
       return (
         <div
-          className="flex items-center"
+          className="flex items-center cursor-pointer hover:bg-[rgba(255,255,255,.05)] rounded px-1 py-0.5 transition-colors"
           style={{ paddingLeft: `${level * 12 + 16}px` }}
+          onClick={() => onFileClick(item.id, item.name, currentCategory)}
         >
-          <span className="text-blue-400">📄</span>
+          <span
+            className={
+              isPdfFile
+                ? "text-red-400"
+                : isMdFile
+                  ? "text-blue-400"
+                  : "text-gray-400"
+            }
+          >
+            {isPdfFile ? "📕" : isMdFile ? "📄" : "📄"}
+          </span>
           <span className="ml-1 text-gray-300 line-clamp-1">{item.name}</span>
         </div>
       );
@@ -193,6 +228,11 @@ export default function Blog() {
   const [activeHeading, setActiveHeading] = useState<string>("");
   const [showBackToTop, setShowBackToTop] = useState(false);
   const blogContentRef = useRef<HTMLDivElement>(null);
+
+  // 检测文章是否是 PDF 文件
+  const isPdfArticle = useCallback((article: BlogArticle) => {
+    return article.filename?.toLowerCase().endsWith(".pdf");
+  }, []);
   // 加载文章列表
   useEffect(() => {
     loadArticles();
@@ -367,6 +407,44 @@ export default function Blog() {
       return newSet;
     });
   }, []);
+
+  // 处理文件点击事件（支持 PDF 和 MD 文件）
+  const handleFileClick = useCallback(
+    (filePath: string, fileName: string, category: string) => {
+      const isPdf = fileName.toLowerCase().endsWith(".pdf");
+      const isMd = fileName.toLowerCase().endsWith(".md");
+
+      if (isPdf) {
+        // PDF 文件：创建临时的 BlogArticle 并打开预览
+        const pdfArticle: BlogArticle = {
+          id: `pdf-${filePath}`,
+          title: fileName.replace(/\.pdf$/i, ""),
+          description: "PDF 文档预览",
+          date: new Date().toISOString().split("T")[0],
+          tags: ["PDF"],
+          content: `# ${fileName.replace(/\.pdf$/i, "")}\n\nPDF 文档正在预览中...`,
+          readTime: "查看 PDF",
+          filename: fileName,
+          category: category,
+        };
+        openArticle(pdfArticle);
+      } else if (isMd) {
+        // MD 文件：从 articles 中查找对应的文章
+        const article = articles.find(
+          (a) => a.filename === fileName && a.category === category,
+        );
+        if (article) {
+          openArticle(article);
+        } else {
+          // 如果没有找到，提示用户
+          alert("未找到对应的文章数据");
+        }
+      } else {
+        alert("不支持的文件类型");
+      }
+    },
+    [articles],
+  );
 
   const loadArticles = async () => {
     try {
@@ -994,6 +1072,7 @@ export default function Blog() {
                                     item={item}
                                     collapsedFolders={collapsedFolders}
                                     toggleFolder={toggleFolder}
+                                    onFileClick={handleFileClick}
                                   />
                                 ),
                               )}
@@ -1040,7 +1119,7 @@ export default function Blog() {
                   </button>
 
                   {/* 文章头部 */}
-                  <div className="mb-6 lg:mb-8">
+                  <div className="mb-4 lg:mb-6">
                     <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3 lg:mb-4 leading-tight">
                       {selectedArticle.title}
                     </h1>
@@ -1057,10 +1136,22 @@ export default function Blog() {
                     </div>
                   </div>
 
-                  {/* 文章内容 */}
-                  <div className="prose prose-invert max-w-none prose-sm lg:prose-base">
-                    {renderMarkdown(selectedArticle.content)}
-                  </div>
+                  {/* 文章内容或 PDF 预览 */}
+                  {isPdfArticle(selectedArticle) ? (
+                    <div className="w-full">
+                      <PdfViewer
+                        file={
+                          selectedArticle.category === "根目录"
+                            ? `/api/pdf/${selectedArticle.filename}`
+                            : `/api/pdf/${selectedArticle.category}/${selectedArticle.filename}`
+                        }
+                      />
+                    </div>
+                  ) : (
+                    <div className="prose prose-invert max-w-none prose-sm lg:prose-base">
+                      {renderMarkdown(selectedArticle.content)}
+                    </div>
+                  )}
                 </div>
 
                 {/* 目录 - 响应式处理 */}

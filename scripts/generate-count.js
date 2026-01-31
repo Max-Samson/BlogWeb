@@ -34,13 +34,20 @@ function scanDirectory(dir, basePath = '', level = 0) {
       });
       fileCount += subResult.stats.files;
       dirCount += subResult.stats.directories;
-    } else if (entry.name.endsWith('.md')) {
+    } else if (entry.name.endsWith('.md') || entry.name.endsWith('.pdf')) {
       fileCount++;
-      // 读取文件内容获取标题
-      const content = fs.readFileSync(fullPath, 'utf8');
-      const titleMatch = content.match(/^#\s+(.+)$/m);
-      const title = titleMatch ? titleMatch[1] : entry.name.replace('.md', '');
-      
+      let title;
+
+      if (entry.name.endsWith('.md')) {
+        // MD 文件：读取文件内容获取标题
+        const content = fs.readFileSync(fullPath, 'utf8');
+        const titleMatch = content.match(/^#\s+(.+)$/m);
+        title = titleMatch ? titleMatch[1] : entry.name.replace('.md', '');
+      } else {
+        // PDF 文件：使用文件名作为标题
+        title = entry.name.replace(/\.pdf$/i, '');
+      }
+
       items.push({
         type: 'file',
         name: entry.name,
