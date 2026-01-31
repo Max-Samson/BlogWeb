@@ -12,13 +12,13 @@
     "react",
     "typescript"
   ],
-  "homepage": "https://github.com/996wuxian/template-web",
+  "homepage": "https://github.com/Max-Samson/BlogWeb",
   "repository": {
     "type": "git",
-    "url": "https://github.com/996wuxian/template-web.git"
+    "url": "https://github.com/Max-Samson/BlogWeb.git"
   },
   "bugs": {
-    "url": "https://github.com/996wuxian/template-web/issues"
+    "url": "https://github.com/Max-Samson/BlogWeb/issues"
   },
   "scripts": {
     "count": "node scripts/generate-count.js",
@@ -38,7 +38,7 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "chokidar": "^4.0.3",
     "gray-matter": "^4.0.3",
-    "next": "15.3.5",
+    "next": "16.1.6",
     "pdfjs-dist": "^5.4.530",
     "pg": "^8.16.3",
     "prisma": "^6.13.0",
