@@ -1,5 +1,5 @@
 {
-  "name": "template-web",
+  "name": "blog-web",
   "version": "0.1.0",
   "private": true,
   "author": {
@@ -55,6 +55,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "commitlint-plugin-function-rules": "^4.3.1",
     "committier": "^0.2.3",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
