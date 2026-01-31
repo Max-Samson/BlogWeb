@@ -421,7 +421,14 @@ export default function ChatPage() {
     } finally {
       setIsSending(false);
     }
-  }, [newMessage, currentRoom, userName, currentUserId, isSending, isConnected]);
+  }, [
+    newMessage,
+    currentRoom,
+    userName,
+    currentUserId,
+    isSending,
+    isConnected,
+  ]);
 
   const sendMessage = () => {
     // 清除之前的定时器
@@ -485,7 +492,7 @@ export default function ChatPage() {
     }
 
     if (!isValidNickname(nickname)) {
-      if (nickname.toLowerCase().trim() === "wuxian") {
+      if (nickname.toLowerCase().trim() === "XiaoShuai") {
         setNicknameError("该昵称不可用，请选择其他昵称");
       } else {
         setNicknameError("昵称包含不当内容，请重新输入");
@@ -736,7 +743,7 @@ export default function ChatPage() {
     return (
       <>
         <Head>
-          <title>聊天室 - wuxian&rsquo;s web</title>
+          <title>聊天室 - XiaoShuai&rsquo;s web</title>
         </Head>
         <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div
@@ -784,7 +791,7 @@ export default function ChatPage() {
   return (
     <>
       <Head>
-        <title>聊天室 - wuxian&rsquo;s web</title>
+        <title>聊天室 - XiaoShuai&rsquo;s web</title>
       </Head>
       <div className="h-screen flex flex-col md:justify-center md:items-center">
         {/* 导航按钮 - 桌面端 */}

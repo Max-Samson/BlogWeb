@@ -117,8 +117,8 @@ export default function Works() {
   return (
     <>
       <Head>
-        <title>作品集 - wuxian&apos;s web</title>
-        <meta name="description" content="wuxian的作品集展示页面" />
+        <title>作品集 - XiaoShuai&apos;s web</title>
+        <meta name="description" content="XiaoShuai的作品集展示页面" />
       </Head>
 
       {/* 图片弹窗 */}
@@ -425,7 +425,7 @@ export default function Works() {
                 {/* 项目信息 */}
                 <div
                   className={`space-y-4 md:space-y-6 ${
-                    index % 2 === 1 ? "lg:order-2" : ""
+                    index % 2 === 0 ? "lg:order-1" : ""
                   }`}
                 >
                   <div className="space-y-3 md:space-y-4">
@@ -488,7 +488,7 @@ export default function Works() {
                     </div>
                   </div>
 
-                  {!work.title.includes("wuxian") ? (
+                  {!work.title.includes("XiaoShuai") ? (
                     <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-2 md:pt-4">
                       {/* 查看详情按钮 */}
                       <button
@@ -506,43 +506,45 @@ export default function Works() {
                       </button>
 
                       {/* 原有的项目链接按钮 */}
-                      {!work.title.includes("wuxian") && work.link !== "#" && (
-                        <>
-                          <button
-                            onClick={() => window.open(work.link, "_blank")}
-                            className="bg-[rgba(0,0,0,.5)] hover:bg-[rgba(0,0,0,.7)] text-white py-2.5 md:py-3 px-4 md:px-6 rounded-lg transition-all duration-300 border border-[rgba(255,255,255,0.2)] backdrop-blur-sm flex items-center justify-center gap-2 cursor-pointer text-sm md:text-base"
-                          >
-                            <SvgIcon
-                              name="github"
-                              width={16}
-                              height={16}
-                              color="#fff"
-                              className="md:w-[18px] md:h-[18px]"
-                            />
-                            查看项目
-                          </button>
-                        </>
-                      )}
+                      {!work.title.includes("XiaoShuai") &&
+                        work.link !== "#" && (
+                          <>
+                            <button
+                              onClick={() => window.open(work.link, "_blank")}
+                              className="bg-[rgba(0,0,0,.5)] hover:bg-[rgba(0,0,0,.7)] text-white py-2.5 md:py-3 px-4 md:px-6 rounded-lg transition-all duration-300 border border-[rgba(255,255,255,0.2)] backdrop-blur-sm flex items-center justify-center gap-2 cursor-pointer text-sm md:text-base"
+                            >
+                              <SvgIcon
+                                name="github"
+                                width={16}
+                                height={16}
+                                color="#fff"
+                                className="md:w-[18px] md:h-[18px]"
+                              />
+                              查看项目
+                            </button>
+                          </>
+                        )}
 
-                      {!work.title.includes("wuxian") && work.download_url && (
-                        <>
-                          <button
-                            onClick={() =>
-                              window.open(work.download_url, "_blank")
-                            }
-                            className="bg-[rgba(0,0,0,.5)] hover:bg-[rgba(0,0,0,.7)] text-white py-2.5 md:py-3 px-4 md:px-6 rounded-lg transition-all duration-300 border border-[rgba(255,255,255,0.2)] backdrop-blur-sm flex items-center justify-center gap-2 cursor-pointer text-sm md:text-base"
-                          >
-                            <SvgIcon
-                              name="down"
-                              width={16}
-                              height={16}
-                              color="#fff"
-                              className="md:w-[18px] md:h-[18px]"
-                            />
-                            前往下载
-                          </button>
-                        </>
-                      )}
+                      {!work.title.includes("XiaoShuai") &&
+                        work.download_url && (
+                          <>
+                            <button
+                              onClick={() =>
+                                window.open(work.download_url, "_blank")
+                              }
+                              className="bg-[rgba(0,0,0,.5)] hover:bg-[rgba(0,0,0,.7)] text-white py-2.5 md:py-3 px-4 md:px-6 rounded-lg transition-all duration-300 border border-[rgba(255,255,255,0.2)] backdrop-blur-sm flex items-center justify-center gap-2 cursor-pointer text-sm md:text-base"
+                            >
+                              <SvgIcon
+                                name="down"
+                                width={16}
+                                height={16}
+                                color="#fff"
+                                className="md:w-[18px] md:h-[18px]"
+                              />
+                              前往下载
+                            </button>
+                          </>
+                        )}
                     </div>
                   ) : (
                     ""
@@ -552,18 +554,20 @@ export default function Works() {
                 {/* 项目图片 */}
                 <div
                   className={`relative order-first lg:order-none ${
-                    index % 2 === 1 ? "lg:order-1" : ""
+                    index % 2 === 0 ? "lg:order-2" : ""
                   }`}
                 >
                   <div
-                    className="relative h-64 md:h-96 lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer"
+                    className={`relative h-64 md:h-96 lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer ${
+                      index === 0 ? "lg:w-[140%] translate-x-[-30%]" : ""
+                    }`}
                     onClick={() => openImageModal(work)}
                   >
                     <Image
                       src={work.image}
                       alt={work.title}
                       fill
-                      className="object-cover"
+                      className={`object-cover`}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent group-hover:opacity-50 transition-opacity duration-700 cursor-pointer" />
                   </div>

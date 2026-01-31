@@ -423,14 +423,17 @@ export default function Blog() {
   }, []);
 
   // 打开文章
-  const openArticle = useCallback((article: BlogArticle) => {
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setSelectedArticle(article);
-      setTableOfContents(generateTableOfContents(article.content));
-      setIsTransitioning(false);
-    }, 300);
-  }, [generateTableOfContents]);
+  const openArticle = useCallback(
+    (article: BlogArticle) => {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setSelectedArticle(article);
+        setTableOfContents(generateTableOfContents(article.content));
+        setIsTransitioning(false);
+      }, 300);
+    },
+    [generateTableOfContents],
+  );
 
   // 处理文件点击事件（支持 PDF 和 MD 文件）
   const handleFileClick = useCallback(
@@ -744,7 +747,7 @@ export default function Blog() {
   return (
     <>
       <Head>
-        <title>docs - wuxian&apos;s web</title>
+        <title>docs - XiaoShuai&apos;s web</title>
         <meta name="description" content="分享前端开发经验和技术文章" />
         <meta
           name="viewport"

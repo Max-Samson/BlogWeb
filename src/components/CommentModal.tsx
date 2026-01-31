@@ -82,7 +82,7 @@ export default function CommentModal({ isOpen, onClose }: CommentModalProps) {
 
       if (!isValidNickname(nickname)) {
         const trimmedNickname = nickname.trim().toLowerCase();
-        if (trimmedNickname === "wuxian") {
+        if (trimmedNickname === "XiaoShuai") {
           setReplyNicknameError("该昵称不可用，请选择其他昵称");
         } else if (containsProfanity(nickname)) {
           setReplyNicknameError("昵称包含不当词汇，请修改后重试");
@@ -110,7 +110,7 @@ export default function CommentModal({ isOpen, onClose }: CommentModalProps) {
 
   // 新增：处理回复昵称变化
   const handleReplyNicknameChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const value = e.target.value;
     setReplyNickname(value);
@@ -123,7 +123,7 @@ export default function CommentModal({ isOpen, onClose }: CommentModalProps) {
 
       if (!isValidNickname(value)) {
         const trimmedNickname = value.trim().toLowerCase();
-        if (trimmedNickname === "wuxian") {
+        if (trimmedNickname === "XiaoShuai") {
           setReplyNicknameError("该昵称不可用，请选择其他昵称");
         } else if (containsProfanity(value)) {
           setReplyNicknameError("昵称包含不当词汇，请修改后重试");
@@ -140,7 +140,7 @@ export default function CommentModal({ isOpen, onClose }: CommentModalProps) {
 
   // 新增：处理回复内容变化
   const handleReplyContentChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const value = e.target.value;
     setReplyContent(value);
@@ -349,7 +349,7 @@ export default function CommentModal({ isOpen, onClose }: CommentModalProps) {
       // 检查昵称是否合法
       if (!isValidNickname(nickname)) {
         const trimmedNickname = nickname.trim().toLowerCase();
-        if (trimmedNickname === "wuxian") {
+        if (trimmedNickname === "XiaoShuai") {
           setNicknameError("该昵称不可用，请选择其他昵称");
         } else if (containsProfanity(nickname)) {
           setNicknameError("昵称包含不当词汇，请修改后重试");
@@ -459,7 +459,7 @@ export default function CommentModal({ isOpen, onClose }: CommentModalProps) {
       // 检查昵称是否合法
       if (!isValidNickname(value)) {
         const trimmedNickname = value.trim().toLowerCase();
-        if (trimmedNickname === "wuxian") {
+        if (trimmedNickname === "XiaoShuai") {
           setNicknameError("该昵称不可用，请选择其他昵称");
         } else if (containsProfanity(value)) {
           setNicknameError("昵称包含不当词汇，请修改后重试");

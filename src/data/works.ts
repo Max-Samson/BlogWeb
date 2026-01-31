@@ -19,7 +19,7 @@ export interface WorkItem {
 // 作品数据
 export const worksData: WorkItem[] = [
   {
-    title: "wuxian's web",
+    title: "XiaoShuai's web",
     description:
       "基于Next.js开发的个人介绍网站，简单介绍了我自己个儿，歌和视频都很有品！！！！。",
     image: "/images/work1.png",

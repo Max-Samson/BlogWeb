@@ -251,7 +251,7 @@ export default function Home() {
                 <div className="text-[28px] md:text-[40px] font-bold text-[#fff] text-shadow-sm">
                   <span className="inline-block">
                     {displayText.split(" ").map((word, wordIndex) => {
-                      if (word === "wuxian") {
+                      if (word === "XiaoShuai") {
                         return (
                           <span
                             key={wordIndex}
