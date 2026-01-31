@@ -61,29 +61,6 @@ export default function PdfViewer({ file, className = "" }: PdfViewerProps) {
 
   return (
     <div className={`pdf-viewer ${className}`}>
-      {/* 控制栏 */}
-      {numPages > 0 && (
-        <div className="flex items-center justify-between mb-4 p-3 bg-white dark:bg-gray-800 rounded-lg shadow">
-          <button
-            onClick={goToPreviousPage}
-            disabled={pageNumber <= 1}
-            className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
-          >
-            上一页
-          </button>
-          <span className="text-sm text-gray-700 dark:text-gray-300">
-            第 {pageNumber} / {numPages} 页
-          </span>
-          <button
-            onClick={goToNextPage}
-            disabled={pageNumber >= numPages}
-            className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
-          >
-            下一页
-          </button>
-        </div>
-      )}
-
       {/* 加载状态 */}
       {loading && (
         <div className="flex items-center justify-center py-12">
@@ -117,6 +94,29 @@ export default function PdfViewer({ file, className = "" }: PdfViewerProps) {
           />
         </Document>
       </div>
+
+      {/* 控制栏 */}
+      {numPages > 0 && (
+        <div className="flex items-center justify-between mt-4 mb-4 p-3 bg-white dark:bg-gray-800 rounded-lg shadow">
+          <button
+            onClick={goToPreviousPage}
+            disabled={pageNumber <= 1}
+            className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+          >
+            上一页
+          </button>
+          <span className="text-sm text-gray-700 dark:text-gray-300">
+            第 {pageNumber} / {numPages} 页
+          </span>
+          <button
+            onClick={goToNextPage}
+            disabled={pageNumber >= numPages}
+            className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+          >
+            下一页
+          </button>
+        </div>
+      )}
     </div>
   );
 }
