@@ -1,3 +1,2 @@
-npx --no -- committier edit $1
-# 若有commitlint，保留下方指令，无则可省略
-# npx --no -- commitlint --edit $1
+# pre-commit hook
+# npm test  # 如果有测试可以在这里运行

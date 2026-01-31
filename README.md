@@ -189,7 +189,9 @@ pnpm generate     # 生成 Prisma 客户端
 
 欢迎提交 Issue 和 Pull Request！
 
-参照模板https://github.com/996wuxian/template-web，十分感谢！
+参照模板https://github.com/996wuxian/template-web
+
+十分感谢！
 
 ## License
 
