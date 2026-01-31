@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
-import type { PDFDocumentProxy } from "pdfjs-dist";
 
 // 配置 Worker - 使用 CDN 确保版本匹配
 if (typeof window !== "undefined") {
@@ -27,7 +26,8 @@ export default function PdfViewer({ file, className = "" }: PdfViewerProps) {
     setMounted(true);
   }, []);
 
-  function onDocumentLoadSuccess({ numPages: nextNumPages }: PDFDocumentProxy) {
+  function onDocumentLoadSuccess(document: { numPages: number }) {
+    const { numPages: nextNumPages } = document;
     setNumPages(nextNumPages);
     setLoading(false);
   }

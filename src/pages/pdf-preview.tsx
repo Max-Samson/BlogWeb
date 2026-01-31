@@ -1,7 +1,18 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import PdfViewer from "@/components/PdfViewer";
+import dynamic from "next/dynamic";
+
+// 动态导入 PdfViewer 组件以避免 SSR 问题
+const PdfViewer = dynamic(() => import("@/components/PdfViewer"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center py-12">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      <span className="ml-3 text-gray-600 dark:text-gray-400">加载中...</span>
+    </div>
+  ),
+});
 
 export default function PdfPreviewPage() {
   const router = useRouter();

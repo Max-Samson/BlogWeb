@@ -358,8 +358,9 @@ export default function Blog() {
     };
 
     // 延迟设置监听器，确保DOM完全渲染
+    let scrollContainer: HTMLElement | null = null;
     const timer = setTimeout(() => {
-      const scrollContainer = blogContentRef.current;
+      scrollContainer = blogContentRef.current;
       if (scrollContainer) {
         scrollContainer.addEventListener("scroll", handleScroll);
         console.log("回到顶部监听器已添加");
@@ -373,7 +374,6 @@ export default function Blog() {
 
     return () => {
       clearTimeout(timer);
-      const scrollContainer = blogContentRef.current;
       if (scrollContainer) {
         scrollContainer.removeEventListener("scroll", handleScroll);
       }
@@ -407,6 +407,30 @@ export default function Blog() {
       return newSet;
     });
   }, []);
+
+  // 生成目录
+  const generateTableOfContents = useCallback((content: string) => {
+    const headings = content.match(/^#{1,6}\s+.+$/gm) || [];
+    return headings.map((heading, index) => {
+      const level = heading.match(/^#+/)?.[0].length || 1;
+      const title = heading.replace(/^#+\s+/, "");
+      return {
+        id: `heading-${index}`,
+        title,
+        level,
+      };
+    });
+  }, []);
+
+  // 打开文章
+  const openArticle = useCallback((article: BlogArticle) => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setSelectedArticle(article);
+      setTableOfContents(generateTableOfContents(article.content));
+      setIsTransitioning(false);
+    }, 300);
+  }, [generateTableOfContents]);
 
   // 处理文件点击事件（支持 PDF 和 MD 文件）
   const handleFileClick = useCallback(
@@ -443,7 +467,7 @@ export default function Blog() {
         alert("不支持的文件类型");
       }
     },
-    [articles],
+    [articles, openArticle],
   );
 
   const loadArticles = async () => {
@@ -506,30 +530,6 @@ export default function Blog() {
 
     return matchesSearch && matchesCategory;
   });
-
-  // 生成目录
-  const generateTableOfContents = (content: string) => {
-    const headings = content.match(/^#{1,6}\s+.+$/gm) || [];
-    return headings.map((heading, index) => {
-      const level = heading.match(/^#+/)?.[0].length || 1;
-      const title = heading.replace(/^#+\s+/, "");
-      return {
-        id: `heading-${index}`,
-        title,
-        level,
-      };
-    });
-  };
-
-  // 打开文章
-  const openArticle = (article: BlogArticle) => {
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setSelectedArticle(article);
-      setTableOfContents(generateTableOfContents(article.content));
-      setIsTransitioning(false);
-    }, 300);
-  };
 
   // 返回文章列表
   const backToList = () => {

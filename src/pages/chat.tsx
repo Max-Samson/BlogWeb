@@ -286,27 +286,7 @@ export default function ChatPage() {
     });
   }, []);
 
-  // 加载聊天室列表
-  useEffect(() => {
-    fetchRooms();
-  }, []);
-
-  // 订阅当前房间
-  useEffect(() => {
-    if (
-      !currentRoom ||
-      !pusherRef.current ||
-      pusherRef.current.connection.state !== "connected"
-    ) {
-      return;
-    }
-
-    subscribeToRoom(currentRoom.id);
-    // 加载历史消息
-    fetchMessages(currentRoom.id);
-  }, [currentRoom]);
-
-  const fetchRooms = async () => {
+  const fetchRooms = useCallback(async () => {
     try {
       setIsLoadingRooms(true);
       const response = await fetch("/api/chat/rooms");
@@ -332,9 +312,9 @@ export default function ChatPage() {
     } finally {
       setIsLoadingRooms(false);
     }
-  };
+  }, [currentRoom]);
 
-  const fetchMessages = async (roomId: string) => {
+  const fetchMessages = useCallback(async (roomId: string) => {
     try {
       setIsLoadingMessages(true);
       const response = await fetch(`/api/chat/messages?roomId=${roomId}`);
@@ -354,7 +334,27 @@ export default function ChatPage() {
     } finally {
       setIsLoadingMessages(false);
     }
-  };
+  }, []);
+
+  // 加载聊天室列表
+  useEffect(() => {
+    fetchRooms();
+  }, [fetchRooms]);
+
+  // 订阅当前房间
+  useEffect(() => {
+    if (
+      !currentRoom ||
+      !pusherRef.current ||
+      pusherRef.current.connection.state !== "connected"
+    ) {
+      return;
+    }
+
+    subscribeToRoom(currentRoom.id);
+    // 加载历史消息
+    fetchMessages(currentRoom.id);
+  }, [currentRoom, subscribeToRoom, fetchMessages]);
 
   const debouncedSendMessage = useCallback(async () => {
     if (!newMessage.trim() || !currentRoom || !userName || isSending) return;
@@ -421,7 +421,7 @@ export default function ChatPage() {
     } finally {
       setIsSending(false);
     }
-  }, [newMessage, currentRoom, userName, currentUserId, isSending]);
+  }, [newMessage, currentRoom, userName, currentUserId, isSending, isConnected]);
 
   const sendMessage = () => {
     // 清除之前的定时器

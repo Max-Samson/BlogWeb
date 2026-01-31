@@ -10,9 +10,9 @@ async function withRetry<T>(
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fn();
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (i === maxRetries - 1) throw error;
-      if (error.code === "P1001") {
+      if (error instanceof Error && "code" in error && error.code === "P1001") {
         console.log(`数据库连接失败，${delay}ms 后重试 (${i + 1}/${maxRetries})...`);
         await new Promise((resolve) => setTimeout(resolve, delay));
       } else {
@@ -45,9 +45,9 @@ export default async function handler(
       );
 
       res.status(200).json(rooms);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("[GET /api/chat/rooms] Error:", error);
-      if (error.code === "P1001") {
+      if (error instanceof Error && "code" in error && error.code === "P1001") {
         res.status(503).json({
           error: "数据库连接失败，请稍后重试",
           message: "数据库正在唤醒中...",
@@ -55,7 +55,7 @@ export default async function handler(
       } else {
         res.status(500).json({
           error: "Failed to fetch rooms",
-          message: error.message,
+          message: error instanceof Error ? error.message : "Unknown error",
         });
       }
     }
@@ -73,9 +73,9 @@ export default async function handler(
       );
 
       res.status(201).json(room);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("[POST /api/chat/rooms] Error:", error);
-      if (error.code === "P1001") {
+      if (error instanceof Error && "code" in error && error.code === "P1001") {
         res.status(503).json({
           error: "数据库连接失败，请稍后重试",
           message: "数据库正在唤醒中...",
@@ -83,7 +83,7 @@ export default async function handler(
       } else {
         res.status(500).json({
           error: "Failed to create room",
-          message: error.message,
+          message: error instanceof Error ? error.message : "Unknown error",
         });
       }
     }

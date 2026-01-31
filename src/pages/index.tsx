@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
-import { useTheme } from "@/contexts/ThemeContext";
 import SvgIcon from "@/components/SvgIcon";
 import GitHubHeatmap from "@/components/GitHubHeatmap";
 import ImageModal from "@/components/ImageModal";
@@ -27,7 +26,6 @@ const geistMono = Geist_Mono({
 });
 
 export default function Home() {
-  const { theme } = useTheme();
   // 弹窗状态
   const [imageModal, setImageModal] = useState({
     isOpen: false,
@@ -60,7 +58,7 @@ export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // 当前年份
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const currentYear = new Date().getFullYear();
 
   //首页介绍
   const fullText = "Hello, I'm XiaoShuai";
