@@ -1,13 +1,15 @@
 import { useRef, useEffect, useState } from "react";
-import { BlogArticle } from "@/hooks/useBlogArticles";
+import { BlogArticle, BlogStats } from "@/hooks/useBlogArticles";
 import SvgIcon from "@/components/SvgIcon";
 import { TypewriterText } from "./TypewriterText";
+import { CategoryPanel } from "./CategoryPanel";
 
 interface ArticleListViewProps {
   articles: BlogArticle[];
   categories: string[];
   searchTerm: string;
   selectedCategory: string;
+  blogStats: BlogStats | null;
   onSearchChange: (term: string) => void;
   onCategorySelect: (category: string) => void;
   onArticleClick: (article: BlogArticle) => void;
@@ -18,6 +20,7 @@ export function ArticleListView({
   categories,
   searchTerm,
   selectedCategory,
+  blogStats,
   onSearchChange,
   onCategorySelect,
   onArticleClick,
@@ -81,6 +84,18 @@ export function ArticleListView({
           <h1 className="text-[40px] font-bold text-[#fff] text-shadow-sm flex items-end justify-center mb-[10px]">
             <TypewriterText text="前端 知识库" />
           </h1>
+
+          {/* 分类面板 */}
+          <div className="mb-4 flex justify-center">
+            <CategoryPanel
+              categories={categories}
+              selectedCategory={selectedCategory}
+              articleCount={articles.length}
+              blogStats={blogStats}
+              onCategorySelect={onCategorySelect}
+            />
+          </div>
+
           <div className="relative">
             <input
               type="text"

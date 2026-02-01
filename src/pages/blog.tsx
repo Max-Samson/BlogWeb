@@ -7,7 +7,7 @@ import { useBlogArticles, DirectoryTreeItem } from "@/hooks/useBlogArticles";
 import { useBlogNavigation } from "@/hooks/useBlogNavigation";
 import { ArticleListView } from "@/components/blog/ArticleListView";
 import { ArticleDetailView } from "@/components/blog/ArticleDetailView";
-import { Sidebar } from "@/components/blog/Sidebar";
+import { BlogStatsPanel } from "@/components/blog/BlogStatsPanel";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -225,7 +225,7 @@ export default function Blog() {
           >
             <div className="max-w-7xl mx-auto flex gap-4 h-[80vh]">
               {/* 侧边栏：分类 + 统计 */}
-              <Sidebar
+              <BlogStatsPanel
                 categories={categories}
                 selectedCategory={selectedCategory}
                 articleCount={articles.length}
@@ -242,6 +242,7 @@ export default function Blog() {
                 categories={categories}
                 searchTerm={searchTerm}
                 selectedCategory={selectedCategory}
+                blogStats={blogStats}
                 onSearchChange={setSearchTerm}
                 onCategorySelect={setSelectedCategory}
                 onArticleClick={openArticle}
@@ -256,15 +257,8 @@ export default function Blog() {
               tableOfContents={tableOfContents}
               activeHeading={activeHeading}
               isTransitioning={isTransitioning}
-              categories={categories}
-              selectedCategory={selectedCategory}
-              blogStats={blogStats}
-              collapsedFolders={collapsedFolders}
               onBack={backToList}
               onHeadingClick={scrollToHeading}
-              onCategorySelect={setSelectedCategory}
-              toggleFolder={toggleFolder}
-              onFileClick={handleFileClick}
             />
           )}
         </div>

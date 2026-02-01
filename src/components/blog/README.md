@@ -4,7 +4,8 @@
 
 ```
 src/components/blog/
-├── Sidebar.tsx              # 侧边栏组件（分类 + 统计面板）
+├── BlogStatsPanel.tsx       # 博客统计栏组件
+├── CategoryPanel.tsx        # 文章分类面板（可独立使用）
 ├── TableOfContents.tsx      # 目录组件（仅 MD 文件显示）
 ├── ArticleListView.tsx      # 文章列表视图
 ├── ArticleDetailView.tsx    # 文章详情视图容器
@@ -26,8 +27,8 @@ blog.tsx (主组件 - 布局协调)
     │   └── useBlogNavigation → 处理导航/文件点击
     │
     ├── 列表视图
-    │   ├── Sidebar (侧边栏)
-    │   │   ├── 分类面板
+    │   ├── BlogStatsPanel (博客统计栏)
+    │   │   ├── CategoryPanel (分类面板 - 可独立使用)
     │   │   └── 统计面板
     │   └── ArticleListView
     │       ├── TypewriterText (打字机)
@@ -35,30 +36,63 @@ blog.tsx (主组件 - 布局协调)
     │       └── 文章卡片列表
     │
     └── 详情视图
-        ├── Sidebar (侧边栏)
         ├── PdfArticleView (PDF 文件) 或
         ├── MdArticleView (MD 文件)
         └── TableOfContents (仅 MD 文件)
 ```
 
+**注意**:
+- CategoryPanel 可以独立导入使用，便于在 blog.tsx 中灵活调整布局位置
+- BlogStatsPanel 已整合 CategoryPanel 和统计面板，提供完整的博客统计功能
+
 ## 📦 组件说明
 
-### 1. Sidebar.tsx
-**职责**: 统一的侧边栏组件，包含分类面板和统计面板
+### 1. CategoryPanel.tsx
+**职责**: 文章分类面板组件（可独立使用）
 
-**使用位置**:
-- 文章列表视图
-- 文章详情视图
+**Props**:
+- `categories: string[]` - 分类列表
+- `selectedCategory: string` - 当前选中的分类
+- `articleCount: number` - 文章总数
+- `blogStats: BlogStats | null` - 博客统计数据
+- `onCategorySelect: (category: string) => void` - 分类选择回调
 
 **特性**:
 - 分类筛选（支持文章数量显示）
+- 激活状态渐变背景
+- 可独立使用，便于灵活布局
+
+**使用示例**:
+```tsx
+import { CategoryPanel } from "@/components/blog/CategoryPanel";
+
+<CategoryPanel
+  categories={categories}
+  selectedCategory={selectedCategory}
+  articleCount={articleCount}
+  blogStats={blogStats}
+  onCategorySelect={setSelectedCategory}
+/>
+```
+
+---
+
+### 2. BlogStatsPanel.tsx
+**职责**: 博客统计栏组件，整合分类面板和统计面板
+
+**使用位置**:
+- 文章列表视图
+
+**特性**:
+- 统一宽度 w-64
+- 分类面板和统计面板垂直排列
 - 博客统计（总文章数、目录数、文件数）
 - 分类统计（带进度条）
 - 目录结构树（支持文件夹折叠）
 
 ---
 
-### 2. TableOfContents.tsx
+### 3. TableOfContents.tsx
 **职责**: 显示 Markdown 文件的目录
 
 **使用条件**: 仅当文件类型为 `.md` 且有标题时显示
@@ -70,7 +104,7 @@ blog.tsx (主组件 - 布局协调)
 
 ---
 
-### 3. ArticleListView.tsx
+### 4. ArticleListView.tsx
 **职责**: 文章列表视图
 
 **包含**:
@@ -82,7 +116,7 @@ blog.tsx (主组件 - 布局协调)
 
 ---
 
-### 4. ArticleDetailView.tsx
+### 5. ArticleDetailView.tsx
 **职责**: 文章详情容器，根据文件类型选择渲染方式
 
 **逻辑**:
@@ -98,7 +132,7 @@ const showTableOfContents = !isPdf && tableOfContents.length > 0;
 
 ---
 
-### 5. PdfArticleView.tsx
+### 6. PdfArticleView.tsx
 **职责**: PDF 文件专用视图
 
 **功能**:
@@ -108,7 +142,7 @@ const showTableOfContents = !isPdf && tableOfContents.length > 0;
 
 ---
 
-### 6. MdArticleView.tsx
+### 7. MdArticleView.tsx
 **职责**: Markdown 文件专用视图
 
 **功能**:
@@ -118,7 +152,7 @@ const showTableOfContents = !isPdf && tableOfContents.length > 0;
 
 ---
 
-### 7. MarkdownRenderer.tsx
+### 8. MarkdownRenderer.tsx
 **职责**: Markdown 内容渲染器
 
 **功能**:
@@ -135,7 +169,7 @@ const showTableOfContents = !isPdf && tableOfContents.length > 0;
 
 ---
 
-### 8. DirectoryTreeItem.tsx
+### 9. DirectoryTreeItem.tsx
 **职责**: 目录树组件（递归）
 
 **功能**:
@@ -150,7 +184,7 @@ const showTableOfContents = !isPdf && tableOfContents.length > 0;
 
 ---
 
-### 9. TypewriterText.tsx
+### 10. TypewriterText.tsx
 **职责**: 打字机动画效果
 
 **功能**:
@@ -166,6 +200,27 @@ const showTableOfContents = !isPdf && tableOfContents.length > 0;
 |---------|---------|---------|------|
 | `.md` | ✅ 显示 | MdArticleView + MarkdownRenderer | 解析标题生成目录 |
 | `.pdf` | ❌ 不显示 | PdfArticleView | PDF 预览，右侧显示文档信息 |
+
+## 🔧 如何使用 CategoryPanel
+
+### 在 blog.tsx 中独立使用分类面板
+
+```tsx
+import { CategoryPanel } from "@/components/blog/CategoryPanel";
+
+// 在需要的位置直接使用
+<CategoryPanel
+  categories={categories}
+  selectedCategory={selectedCategory}
+  articleCount={articles.length}
+  blogStats={blogStats}
+  onCategorySelect={setSelectedCategory}
+/>
+```
+
+### 在 BlogStatsPanel 中使用
+
+BlogStatsPanel 组件内部已集成 CategoryPanel，也可继续使用完整的 BlogStatsPanel 组件。
 
 ## 🔧 如何添加新功能
 
@@ -188,6 +243,6 @@ const showTableOfContents = !isPdf && tableOfContents.length > 0;
 ## 📝 注意事项
 
 1. **PDF 文件不生成目录** - PDF 没有标题信息，所以右侧显示的是简化的文档信息面板
-2. **侧边栏可复用** - Sidebar 在列表视图和详情视图都可以使用
+2. **博客统计栏可复用** - BlogStatsPanel 在列表视图和详情视图都可以使用
 3. **类型安全** - 所有组件都有完整的 TypeScript 类型定义
 4. **状态管理** - 使用 hooks 集中管理数据，避免 prop drilling
