@@ -1,23 +1,13 @@
-import { useState, useEffect, useCallback, JSX, useRef } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
-import SvgIcon from "@/components/SvgIcon";
-import { Geist, Geist_Mono } from "next/font/google";
-import React from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import Link from "next/link";
-import dynamic from "next/dynamic";
-
-// 动态导入 PdfViewer 组件（客户端渲染）
-const PdfViewer = dynamic(() => import("@/components/PdfViewer"), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center py-12">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-      <span className="ml-3 text-gray-600 dark:text-gray-400">加载中...</span>
-    </div>
-  ),
-});
+import { Geist, Geist_Mono } from "next/font/google";
+import SvgIcon from "@/components/SvgIcon";
+import { useBlogArticles, DirectoryTreeItem } from "@/hooks/useBlogArticles";
+import { useBlogNavigation } from "@/hooks/useBlogNavigation";
+import { ArticleListView } from "@/components/blog/ArticleListView";
+import { ArticleDetailView } from "@/components/blog/ArticleDetailView";
+import { Sidebar } from "@/components/blog/Sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,216 +19,60 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-interface BlogArticle {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  tags: string[];
-  content: string;
-  readTime: string;
-  filename: string;
-  category: string;
-}
-
-interface TableOfContentsItem {
-  id: string;
-  title: string;
-  level: number;
-}
-
-interface DirectoryTreeItem {
-  id: string;
-  name: string;
-  isFolder: boolean;
-  level: number;
-  children: DirectoryTreeItem[];
-  parentCategory?: string;
-}
-
-interface BlogStats {
-  totalArticles: number;
-  totalDirectories: number;
-  totalFiles: number;
-  lastUpdated: string;
-  categoryStats: { [key: string]: number };
-  directoryTree: DirectoryTreeItem[];
-}
-
-const DirectoryItem = React.memo(
-  ({
-    item,
-    level = 0,
-    collapsedFolders,
-    toggleFolder,
-    onFileClick,
-    parentCategory = "",
-  }: {
-    item: DirectoryTreeItem;
-    level?: number;
-    collapsedFolders: Set<string>;
-    toggleFolder: (folderId: string) => void;
-    onFileClick: (filePath: string, fileName: string, category: string) => void;
-    parentCategory?: string;
-  }) => {
-    const isCollapsed = collapsedFolders.has(item.id);
-    const isPdfFile = item.name.toLowerCase().endsWith(".pdf");
-    const isMdFile = item.name.toLowerCase().endsWith(".md");
-
-    // 当前类别
-    const currentCategory = item.isFolder ? item.name : parentCategory;
-
-    if (item.isFolder) {
-      return (
-        <div>
-          <div
-            className="flex items-center cursor-pointer hover:bg-[rgba(255,255,255,.05)] rounded px-1 py-0.5"
-            style={{ paddingLeft: `${level * 12}px` }}
-            onClick={() => toggleFolder(item.id)}
-          >
-            <SvgIcon
-              name={isCollapsed ? "right" : "down"}
-              width={12}
-              height={12}
-              color="#9CA3AF"
-              className="mr-1 flex-shrink-0"
-            />
-            <span className="text-yellow-400">📁</span>
-            <span className="ml-1 text-gray-300">{item.name}</span>
-          </div>
-          {!isCollapsed && (
-            <div>
-              {item.children.map((child, index) => (
-                <DirectoryItem
-                  key={child.id || `${child.name}-${index}`}
-                  item={child}
-                  level={level + 1}
-                  collapsedFolders={collapsedFolders}
-                  toggleFolder={toggleFolder}
-                  onFileClick={onFileClick}
-                  parentCategory={currentCategory}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      );
-    } else {
-      return (
-        <div
-          className="flex items-center cursor-pointer hover:bg-[rgba(255,255,255,.05)] rounded px-1 py-0.5 transition-colors"
-          style={{ paddingLeft: `${level * 12 + 16}px` }}
-          onClick={() => onFileClick(item.id, item.name, currentCategory)}
-        >
-          <span
-            className={
-              isPdfFile
-                ? "text-red-400"
-                : isMdFile
-                  ? "text-blue-400"
-                  : "text-gray-400"
-            }
-          >
-            {isPdfFile ? "📕" : isMdFile ? "📄" : "📄"}
-          </span>
-          <span className="ml-1 text-gray-300 line-clamp-1">{item.name}</span>
-        </div>
-      );
-    }
-  },
-);
-
-DirectoryItem.displayName = "DirectoryItem";
-
-// 将打字机动画提取为独立组件
-const TypewriterText = ({ text }: { text: string }) => {
-  const [displayText, setDisplayText] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const typeSpeed = 150;
-    const deleteSpeed = 100;
-    const pauseTime = 2000;
-    const restartPause = 1000;
-
-    const timer = setTimeout(
-      () => {
-        if (!isDeleting) {
-          if (currentIndex < text.length) {
-            setDisplayText(text.slice(0, currentIndex + 1));
-            setCurrentIndex(currentIndex + 1);
-          } else {
-            setTimeout(() => setIsDeleting(true), pauseTime);
-          }
-        } else {
-          if (currentIndex > 0) {
-            setDisplayText(text.slice(0, currentIndex - 1));
-            setCurrentIndex(currentIndex - 1);
-          } else {
-            setTimeout(() => setIsDeleting(false), restartPause);
-          }
-        }
-      },
-      isDeleting ? deleteSpeed : typeSpeed,
-    );
-
-    return () => clearTimeout(timer);
-  }, [currentIndex, isDeleting, text]);
-
-  return (
-    <span className="inline-block">
-      {displayText.split(" ").map((word, wordIndex) => {
-        if (word === "前端") {
-          return (
-            <span
-              key={wordIndex}
-              className="bg-gradient-to-br from-[var(--primary-start)] to-[var(--primary-end)] bg-clip-text text-transparent"
-            >
-              {word}
-            </span>
-          );
-        }
-        return (
-          <span key={wordIndex}>
-            {word}
-            {wordIndex < displayText.split(" ").length - 1 ? " " : ""}
-          </span>
-        );
-      })}
-      <span className="animate-pulse text-[var(--primary-end)] pl-[10px] pb-[4px]">|</span>
-    </span>
-  );
-};
-
 export default function Blog() {
+  // 数据 hooks
+  const { articles, categories, loading, blogStats } = useBlogArticles();
+  const {
+    selectedArticle,
+    tableOfContents,
+    isTransitioning,
+    openArticle,
+    backToList,
+    handleFileClick,
+    scrollToHeading,
+  } = useBlogNavigation({ articles });
+
+  // 本地状态
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedArticle, setSelectedArticle] = useState<BlogArticle | null>(
-    null,
-  );
-  const [tableOfContents, setTableOfContents] = useState<TableOfContentsItem[]>(
-    [],
-  );
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [articles, setArticles] = useState<BlogArticle[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("全部");
-  const [loading, setLoading] = useState(true);
-  const [blogStats, setBlogStats] = useState<BlogStats | null>(null);
-  const [activeHeading, setActiveHeading] = useState<string>("");
-  const [showBackToTop, setShowBackToTop] = useState(false);
-  const blogContentRef = useRef<HTMLDivElement>(null);
+  const [activeHeading, setActiveHeading] = useState("");
+  const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(new Set());
 
-  // 检测文章是否是 PDF 文件
-  const isPdfArticle = useCallback((article: BlogArticle) => {
-    return article.filename?.toLowerCase().endsWith(".pdf");
-  }, []);
-  // 加载文章列表
+  // 折叠状态管理
+  const toggleFolder = (folderId: string) => {
+    setCollapsedFolders((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(folderId)) {
+        newSet.delete(folderId);
+      } else {
+        newSet.add(folderId);
+      }
+      return newSet;
+    });
+  };
+
+  // 初始化折叠状态
   useEffect(() => {
-    loadArticles();
-    loadBlogStats();
-  }, []);
+    if (blogStats?.directoryTree) {
+      const getAllFolderIds = (items: DirectoryTreeItem[]): string[] => {
+        const folderIds: string[] = [];
+        items.forEach((item) => {
+          if (item.isFolder) {
+            folderIds.push(item.id);
+            if (item.children && item.children.length > 0) {
+              folderIds.push(...getAllFolderIds(item.children));
+            }
+          }
+        });
+        return folderIds;
+      };
 
+      const allFolderIds = getAllFolderIds(blogStats.directoryTree || []);
+      setCollapsedFolders(new Set(allFolderIds));
+    }
+  }, [blogStats]);
+
+  // 监听滚动更新活动标题
   useEffect(() => {
     if (!selectedArticle) return;
 
@@ -247,9 +81,7 @@ export default function Blog() {
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          const scrollContainer = document.querySelector(
-            ".custom-scrollbar",
-          ) as HTMLElement;
+          const scrollContainer = document.querySelector(".custom-scrollbar") as HTMLElement;
           if (!scrollContainer) return;
 
           const scrollTop = scrollContainer.scrollTop;
@@ -261,7 +93,6 @@ export default function Blog() {
               if (element) {
                 const rect = element.getBoundingClientRect();
                 const containerRect = scrollContainer.getBoundingClientRect();
-                // 计算相对于滚动容器的位置
                 const relativeTop = rect.top - containerRect.top;
                 return {
                   id: item.id,
@@ -272,38 +103,30 @@ export default function Blog() {
               }
               return null;
             })
-            .filter((item): item is NonNullable<typeof item> => item !== null); // 类型守卫
+            .filter((item): item is { id: string; top: number; absoluteTop: number; element: HTMLElement } => item !== null);
 
           if (headings.length === 0) return;
 
-          // 改进的检测逻辑
-          const threshold = 80; // 减小阈值
-          let bestHeading = headings[0]; // 默认第一个标题
+          const threshold = 80;
+          let bestHeading = headings[0] ?? null;
 
-          // 找到最合适的标题
           for (let i = 0; i < headings.length; i++) {
             const heading = headings[i];
-
-            // 如果标题在视口顶部附近或之上
+            if (!heading) continue;
             if (heading.top <= threshold) {
               bestHeading = heading;
             } else {
-              // 如果当前标题在阈值之下，停止查找
               break;
             }
           }
 
-          // 特殊处理：如果没有标题在阈值内，选择最接近顶部的可见标题
-          if (bestHeading.top > threshold) {
-            const visibleHeadings = headings.filter(
-              (h) => h.top >= 0 && h.top <= containerHeight,
-            );
-            if (visibleHeadings.length > 0) {
+          if (bestHeading && bestHeading.top > threshold) {
+            const visibleHeadings = headings.filter((h) => h && h.top >= 0 && h.top <= containerHeight);
+            if (visibleHeadings.length > 0 && visibleHeadings[0]) {
               bestHeading = visibleHeadings[0];
             }
           }
 
-          // 只有当找到的标题与当前不同时才更新
           if (bestHeading && bestHeading.id !== activeHeading) {
             setActiveHeading(bestHeading.id);
           }
@@ -314,19 +137,16 @@ export default function Blog() {
       }
     };
 
-    // 获取滚动容器
     const scrollContainer = document.querySelector(".custom-scrollbar");
     if (scrollContainer) {
-      // 添加防抖延迟
       let timeoutId: NodeJS.Timeout;
       const debouncedHandleScroll = () => {
         clearTimeout(timeoutId);
-        timeoutId = setTimeout(handleScroll, 30); // 减少防抖时间
+        timeoutId = setTimeout(handleScroll, 30);
       };
 
       scrollContainer.addEventListener("scroll", debouncedHandleScroll);
-      // 初始检查
-      setTimeout(handleScroll, 100); // 延迟初始检查
+      setTimeout(handleScroll, 100);
 
       return () => {
         clearTimeout(timeoutId);
@@ -334,388 +154,6 @@ export default function Blog() {
       };
     }
   }, [selectedArticle, tableOfContents, activeHeading]);
-
-  // 监听滚动显示/隐藏回到顶部按钮
-  useEffect(() => {
-    if (selectedArticle) {
-      setShowBackToTop(false);
-      return;
-    }
-
-    // 等待数据加载完成和DOM渲染
-    if (loading || articles.length === 0) {
-      setShowBackToTop(false);
-      return;
-    }
-
-    const handleScroll = () => {
-      if (blogContentRef.current) {
-        const scrollTop = blogContentRef.current.scrollTop;
-        const shouldShow = scrollTop > 100;
-        console.log("滚动位置:", scrollTop, "是否显示按钮:", shouldShow); // 调试日志
-        setShowBackToTop(shouldShow);
-      }
-    };
-
-    // 延迟设置监听器，确保DOM完全渲染
-    let scrollContainer: HTMLElement | null = null;
-    const timer = setTimeout(() => {
-      scrollContainer = blogContentRef.current;
-      if (scrollContainer) {
-        scrollContainer.addEventListener("scroll", handleScroll);
-        console.log("回到顶部监听器已添加");
-
-        // 立即检查一次滚动位置
-        handleScroll();
-      } else {
-        console.log("blogContentRef.current 为空");
-      }
-    }, 300); // 增加延迟时间
-
-    return () => {
-      clearTimeout(timer);
-      if (scrollContainer) {
-        scrollContainer.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, [selectedArticle, loading, articles.length]);
-
-  // 回到顶部函数
-  const scrollToTop = () => {
-    if (blogContentRef.current) {
-      blogContentRef.current.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  // 添加折叠状态管理
-  const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(
-    new Set(),
-  );
-
-  // 切换文件夹折叠状态
-  const toggleFolder = useCallback((folderId: string) => {
-    setCollapsedFolders((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(folderId)) {
-        newSet.delete(folderId);
-      } else {
-        newSet.add(folderId);
-      }
-      return newSet;
-    });
-  }, []);
-
-  // 生成目录
-  const generateTableOfContents = useCallback((content: string) => {
-    const headings = content.match(/^#{1,6}\s+.+$/gm) || [];
-    return headings.map((heading, index) => {
-      const level = heading.match(/^#+/)?.[0].length || 1;
-      const title = heading.replace(/^#+\s+/, "");
-      return {
-        id: `heading-${index}`,
-        title,
-        level,
-      };
-    });
-  }, []);
-
-  // 打开文章
-  const openArticle = useCallback(
-    (article: BlogArticle) => {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setSelectedArticle(article);
-        setTableOfContents(generateTableOfContents(article.content));
-        setIsTransitioning(false);
-      }, 300);
-    },
-    [generateTableOfContents],
-  );
-
-  // 处理文件点击事件（支持 PDF 和 MD 文件）
-  const handleFileClick = useCallback(
-    (filePath: string, fileName: string, category: string) => {
-      const isPdf = fileName.toLowerCase().endsWith(".pdf");
-      const isMd = fileName.toLowerCase().endsWith(".md");
-
-      if (isPdf) {
-        // PDF 文件：创建临时的 BlogArticle 并打开预览
-        const pdfArticle: BlogArticle = {
-          id: `pdf-${filePath}`,
-          title: fileName.replace(/\.pdf$/i, ""),
-          description: "PDF 文档预览",
-          date: new Date().toISOString().split("T")[0],
-          tags: ["PDF"],
-          content: `# ${fileName.replace(/\.pdf$/i, "")}\n\nPDF 文档正在预览中...`,
-          readTime: "查看 PDF",
-          filename: fileName,
-          category: category,
-        };
-        openArticle(pdfArticle);
-      } else if (isMd) {
-        // MD 文件：从 articles 中查找对应的文章
-        const article = articles.find(
-          (a) => a.filename === fileName && a.category === category,
-        );
-        if (article) {
-          openArticle(article);
-        } else {
-          // 如果没有找到，提示用户
-          alert("未找到对应的文章数据");
-        }
-      } else {
-        alert("不支持的文件类型");
-      }
-    },
-    [articles, openArticle],
-  );
-
-  const loadArticles = async () => {
-    try {
-      const response = await fetch("/api/blogs");
-      if (!response.ok) {
-        throw new Error("加载文章失败");
-      }
-      const data = await response.json();
-      setArticles(data.articles || []);
-      setCategories(data.categories || ["全部"]);
-      setLoading(false);
-    } catch (error) {
-      console.error("加载文章失败:", error);
-      setArticles([]);
-      setCategories(["全部"]);
-      setLoading(false);
-    }
-  };
-
-  const loadBlogStats = async () => {
-    try {
-      const response = await fetch("/api/blog-stats");
-      if (response.ok) {
-        const stats = await response.json();
-        setBlogStats(stats);
-
-        // 默认收缩所有文件夹
-        const getAllFolderIds = (items: DirectoryTreeItem[]): string[] => {
-          const folderIds: string[] = [];
-          items.forEach((item) => {
-            if (item.isFolder) {
-              folderIds.push(item.id);
-              if (item.children && item.children.length > 0) {
-                folderIds.push(...getAllFolderIds(item.children));
-              }
-            }
-          });
-          return folderIds;
-        };
-
-        const allFolderIds = getAllFolderIds(stats.directoryTree || []);
-        setCollapsedFolders(new Set(allFolderIds));
-      }
-    } catch (error) {
-      console.error("加载统计信息失败:", error);
-    }
-  };
-  // 过滤文章
-  const filteredArticles = articles.filter((article) => {
-    const matchesSearch =
-      article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      article.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      article.tags.some((tag) =>
-        tag.toLowerCase().includes(searchTerm.toLowerCase()),
-      );
-
-    const matchesCategory =
-      selectedCategory === "全部" || article.category === selectedCategory;
-
-    return matchesSearch && matchesCategory;
-  });
-
-  // 返回文章列表
-  const backToList = () => {
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setSelectedArticle(null);
-      setTableOfContents([]);
-      setIsTransitioning(false);
-    }, 300);
-  };
-
-  // 跳转到指定标题
-  const scrollToHeading = (headingId: string) => {
-    const element = document.getElementById(headingId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
-  const [showToast, setShowToast] = React.useState(false);
-
-  // 渲染 Markdown 内容（简化版）
-  const renderMarkdown = (content: string) => {
-    const lines = content.split("\n");
-    const elements: JSX.Element[] = [];
-    let inCodeBlock = false;
-    let codeBlockContent = "";
-    let codeLanguage = "";
-    let headingIndex = 0; // 添加标题计数器
-
-    // 复制代码功能
-    const copyToClipboard = (text: string) => {
-      // 移除末尾的换行符
-      const cleanText = text.replace(/\n$/, "");
-      navigator.clipboard
-        .writeText(cleanText)
-        .then(() => {
-          setShowToast(true);
-          setTimeout(() => {
-            setShowToast(false);
-          }, 2000);
-        })
-        .catch((err) => {
-          console.error("复制失败:", err);
-        });
-    };
-
-    lines.forEach((line, index) => {
-      // 代码块处理
-      if (line.startsWith("```")) {
-        if (!inCodeBlock) {
-          inCodeBlock = true;
-          codeBlockContent = "";
-          // 提取语言类型
-          codeLanguage = line.replace("```", "").trim() || "plaintext";
-        } else {
-          inCodeBlock = false;
-
-          // 关键修复：为每个代码块创建独立的内容副本
-          const currentCodeContent = codeBlockContent;
-          const currentLanguage = codeLanguage;
-
-          elements.push(
-            <div
-              key={`code-${index}`}
-              className="bg-gray-900 rounded-lg my-4 overflow-hidden relative group"
-            >
-              {/* 语言标签和复制按钮 */}
-              <div className="flex justify-between items-center px-4 py-2 bg-gray-800 border-b border-gray-700">
-                <span className="text-xs text-gray-400 uppercase font-mono">
-                  {currentLanguage}
-                </span>
-                <button
-                  onClick={() => copyToClipboard(currentCodeContent)}
-                  className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 bg-gray-700 hover:bg-gray-600 text-white text-xs px-2 py-1 rounded flex items-center gap-1"
-                  title="复制代码"
-                >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <rect
-                      x="9"
-                      y="9"
-                      width="13"
-                      height="13"
-                      rx="2"
-                      ry="2"
-                    ></rect>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                  </svg>
-                  复制
-                </button>
-              </div>
-
-              {/* 使用 SyntaxHighlighter 进行语法高亮 */}
-              <SyntaxHighlighter
-                language={
-                  currentLanguage === "plaintext" ? "text" : currentLanguage
-                }
-                style={vscDarkPlus}
-                customStyle={{
-                  margin: 0,
-                  padding: "16px",
-                  background: "transparent",
-                  fontSize: "14px",
-                }}
-                showLineNumbers={false}
-                wrapLines={true}
-              >
-                {currentCodeContent}
-              </SyntaxHighlighter>
-            </div>,
-          );
-        }
-        return;
-      }
-
-      if (inCodeBlock) {
-        // 修复复制功能：正确拼接代码内容
-        if (codeBlockContent === "") {
-          codeBlockContent = line;
-        } else {
-          codeBlockContent += "\n" + line;
-        }
-        return;
-      }
-
-      // 标题处理 - 修复 ID 生成逻辑
-      if (line.startsWith("# ")) {
-        const id = `heading-${headingIndex}`; // 使用计数器生成 ID
-        headingIndex++; // 递增计数器
-        elements.push(
-          <h1
-            key={index}
-            id={id}
-            className="text-3xl font-bold mb-4 text-white mt-8 first:mt-0"
-          >
-            {line.replace("# ", "")}
-          </h1>,
-        );
-      } else if (line.startsWith("## ")) {
-        const id = `heading-${headingIndex}`; // 使用计数器生成 ID
-        headingIndex++; // 递增计数器
-        elements.push(
-          <h2
-            key={index}
-            id={id}
-            className="text-2xl font-bold mb-3 text-white mt-6"
-          >
-            {line.replace("## ", "")}
-          </h2>,
-        );
-      } else if (line.startsWith("### ")) {
-        const id = `heading-${headingIndex}`; // 使用计数器生成 ID
-        headingIndex++; // 递增计数器
-        elements.push(
-          <h3
-            key={index}
-            id={id}
-            className="text-xl font-bold mb-2 text-white mt-4"
-          >
-            {line.replace("### ", "")}
-          </h3>,
-        );
-      } else if (line.trim() && !line.startsWith("`")) {
-        // 普通段落
-        elements.push(
-          <p key={index} className="mb-4 text-gray-300 leading-relaxed">
-            {line}
-          </p>,
-        );
-      } else if (!line.trim()) {
-        elements.push(<br key={index} />);
-      }
-    });
-
-    return elements;
-  };
 
   if (loading) {
     return (
@@ -749,29 +187,9 @@ export default function Blog() {
       <Head>
         <title>docs - XiaoShuai&apos;s web</title>
         <meta name="description" content="分享前端开发经验和技术文章" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, viewport-fit=cover"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      {/* Toast 提示 */}
-      {showToast && (
-        <div className="fixed top-4 right-4 z-50 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <polyline points="20,6 9,17 4,12"></polyline>
-          </svg>
-          代码已复制到剪贴板
-        </div>
-      )}
 
       <div
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen font-[family-name:var(--font-geist-sans)] custom-scrollbar overflow-x-hidden`}
@@ -802,446 +220,52 @@ export default function Blog() {
           {/* 文章列表视图 */}
           <div
             className={`transition-all duration-300 ${
-              selectedArticle
-                ? "opacity-0 pointer-events-none absolute"
-                : "opacity-100"
+              selectedArticle ? "opacity-0 pointer-events-none absolute" : "opacity-100"
             } ${isTransitioning ? "scale-95" : "scale-100"}`}
           >
-            {/* 主要内容区域 - 左右布局 */}
             <div className="max-w-7xl mx-auto flex gap-4 h-[80vh]">
-              {/* 左侧分类面板 */}
-              <div className="w-64 sticky top-45 h-fit hidden sm:block">
-                <div className="bg-[var(--black-light)] rounded-lg p-4 border border-[var(--white-light)]">
-                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <SvgIcon name="tag" width={20} height={20} color="#fff" />
-                    文章分类
-                  </h3>
-                  <div className="space-y-2">
-                    {categories.map((category) => (
-                      <button
-                        key={category}
-                        onClick={() => setSelectedCategory(category)}
-                        className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-between ${
-                          selectedCategory === category
-                            ? "bg-[var(--primary-end)] text-white shadow-lg"
-                            : "bg-[rgba(0,0,0,.2)] text-gray-300 hover:bg-[rgba(0,0,0,0.4)] border border-[rgba(255,255,255,.05)]"
-                        }`}
-                      >
-                        <span>{category}</span>
-                        <span
-                          className={`text-xs px-2 py-1 rounded-full ${
-                            selectedCategory === category
-                              ? "bg-[rgba(255,255,255,.2)] text-white"
-                              : "bg-[rgba(255,255,255,.1)] text-gray-400"
-                          }`}
-                        >
-                          {category === "全部"
-                            ? articles.length
-                            : articles.filter(
-                                (article) => article.category === category,
-                              ).length}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              {/* 侧边栏：分类 + 统计 */}
+              <Sidebar
+                categories={categories}
+                selectedCategory={selectedCategory}
+                articleCount={articles.length}
+                blogStats={blogStats}
+                collapsedFolders={collapsedFolders}
+                onCategorySelect={setSelectedCategory}
+                toggleFolder={toggleFolder}
+                onFileClick={handleFileClick}
+              />
 
-              {/* 中间文章列表 */}
-              <div className="flex-1 w-full">
-                {/* 搜索栏 */}
-                <div className="mb-4">
-                  <div className="max-w-2xl mx-auto">
-                    <h1 className="text-[40px] font-bold text-[#fff] text-shadow-sm flex items-end justify-center mb-[10px]">
-                      <TypewriterText text="前端 知识库" />
-                    </h1>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        placeholder="搜索文章标题、内容或标签..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full px-4 py-3 pl-12 bg-[var(--black-light)] border border-[var(--white-light)] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[var(--primary-end)] transition-colors"
-                      />
-                      <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-                        <SvgIcon
-                          name="search"
-                          width={20}
-                          height={20}
-                          color="#fff"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 移动端分类tabs */}
-                <div className="mt-4 sm:hidden">
-                  <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide px-1 -mx-1">
-                    {categories.map((category) => (
-                      <button
-                        key={category}
-                        onClick={() => setSelectedCategory(category)}
-                        className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                          selectedCategory === category
-                            ? "bg-[var(--primary-end)] text-white shadow-lg"
-                            : "bg-[var(--black-light)] text-gray-300 hover:bg-[rgba(0,0,0,.5)] border border-[var(--white-light)]"
-                        }`}
-                      >
-                        {category}
-                        <span
-                          className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
-                            selectedCategory === category
-                              ? "bg-[rgba(255,255,255,.2)] text-white"
-                              : "bg-[rgba(255,255,255,.1)] text-gray-400"
-                          }`}
-                        >
-                          {category === "全部"
-                            ? articles.length
-                            : articles.filter(
-                                (article) => article.category === category,
-                              ).length}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div
-                  ref={blogContentRef}
-                  className="grid gap-3 max-h-[70vh] overflow-auto custom-scrollbar blog-content relative pb-20"
-                >
-                  {filteredArticles.map((article) => (
-                    <div
-                      key={article.id}
-                      onClick={() => openArticle(article)}
-                      className="bg-[var(--black-light)] rounded-lg p-4 cursor-pointer hover:bg-[rgba(0,0,0,0.4)] transition-all duration-200 border border-[var(--white-light)] hover:border-[var(--primary-end)] group"
-                    >
-                      <div className="flex justify-between items-start mb-1">
-                        <h2 className="text-xl font-bold text-white group-hover:text-[var(--primary-end)] transition-colors">
-                          {article.title}
-                        </h2>
-                        <div className="flex flex-col items-end gap-1">
-                          <span className="text-sm text-gray-400">
-                            {article.date}
-                          </span>
-                        </div>
-                      </div>
-                      <p className="text-gray-300 mb-2 leading-relaxed">
-                        {article.description}
-                      </p>
-                      <div className="flex justify-between items-center">
-                        <div className="flex gap-2">
-                          <span className="px-2 py-1 bg-[rgba(61,133,169,.2)] text-[#fff] rounded text-sm">
-                            {article.category}
-                          </span>
-                        </div>
-                        <span className="text-sm text-gray-400">
-                          {article.readTime}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-
-                  {/* 回到顶部按钮 */}
-                  {showBackToTop && (
-                    <div className="sticky bottom-4 flex justify-end pr-4 pointer-events-none ">
-                      <button
-                        onClick={scrollToTop}
-                        className="bg-[rgba(61,133,169,0.9)] hover:bg-[rgba(61,133,169,1)] text-white p-1 rounded-full shadow-lg transition-all duration-300 hover:scale-110 backdrop-blur-sm border border-[rgba(255,255,255,0.1)] pointer-events-auto cursor-pointer"
-                        aria-label="回到顶部"
-                      >
-                        <SvgIcon
-                          name="top"
-                          width={20}
-                          height={20}
-                          color="#fff"
-                        />
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {filteredArticles.length === 0 && (
-                  <div className="text-center py-12">
-                    <p className="text-gray-400 text-lg">
-                      {selectedCategory === "全部"
-                        ? "没有找到相关文章"
-                        : `在 "${selectedCategory}" 分类中没有找到相关文章`}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* 右侧统计面板 */}
-              <div className="w-80 sticky top-49 h-fit hidden lg:block">
-                <div className="bg-[var(--black-light)] rounded-lg p-3 border border-[var(--white-light)]">
-                  <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
-                    <SvgIcon name="count" width={20} height={20} color="#fff" />
-                    博客统计
-                  </h3>
-
-                  {blogStats ? (
-                    <div className="space-y-3">
-                      {/* 总体统计 */}
-                      <div className="bg-[rgba(0,0,0,.2)] rounded-lg p-4">
-                        <h4 className="text-sm font-medium text-[#fff] mb-3 flex gap-[5px] items-center">
-                          <SvgIcon
-                            name="count1"
-                            width={15}
-                            height={15}
-                            color="#fff"
-                          />
-                          总体统计
-                        </h4>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex justify-between">
-                            <span className="text-gray-300">总文章数</span>
-                            <span className="text-white font-medium">
-                              {blogStats.totalArticles} 篇
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-300">总目录数</span>
-                            <span className="text-white font-medium">
-                              {blogStats.totalDirectories} 个
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-300">总文件数</span>
-                            <span className="text-white font-medium">
-                              {blogStats.totalFiles} 个
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* 分类统计 */}
-                      <div className="bg-[rgba(0,0,0,.2)] rounded-lg p-4">
-                        <h4 className="text-sm font-medium text-[#fff] mb-3 flex gap-[5px] items-center">
-                          <SvgIcon
-                            name="count2"
-                            width={15}
-                            height={15}
-                            color="#fff"
-                          />
-                          分类统计
-                        </h4>
-                        <div className="space-y-2 text-sm">
-                          {Object.entries(blogStats.categoryStats).map(
-                            ([category, count]) => (
-                              <div
-                                key={category}
-                                className="flex justify-between items-center"
-                              >
-                                <span className="text-gray-300">
-                                  {category}
-                                </span>
-                                <div className="flex items-center gap-2">
-                                  <div className="w-16 h-2 bg-[rgba(255,255,255,.1)] rounded-full overflow-hidden">
-                                    <div
-                                      className="h-full bg-gradient-to-r from-[var(--primary-end)] to-[var(--primary-start)] rounded-full transition-all duration-300"
-                                      style={{
-                                        width: `${
-                                          (count / blogStats.totalArticles) *
-                                          100
-                                        }%`,
-                                      }}
-                                    ></div>
-                                  </div>
-                                  <span className="text-white font-medium w-8 text-right">
-                                    {count}
-                                  </span>
-                                </div>
-                              </div>
-                            ),
-                          )}
-                        </div>
-                      </div>
-
-                      {/* 目录结构 */}
-                      <div className="bg-[rgba(0,0,0,.2)] rounded-lg p-4 overflow-y-auto custom-scrollbar h-[150px]">
-                        <h4 className="text-sm font-medium text-[#fff] mb-3">
-                          📁 目录结构
-                        </h4>
-                        <div className="text-xs text-gray-300 font-mono leading-relaxed max-h-60 overflow-y-auto custom-scrollbar">
-                          {blogStats?.directoryTree &&
-                          blogStats.directoryTree.length > 0 ? (
-                            <div className="space-y-1">
-                              {blogStats.directoryTree.map(
-                                (item: DirectoryTreeItem, index: number) => (
-                                  <DirectoryItem
-                                    key={item.id || `${item.name}-${index}`}
-                                    item={item}
-                                    collapsedFolders={collapsedFolders}
-                                    toggleFolder={toggleFolder}
-                                    onFileClick={handleFileClick}
-                                  />
-                                ),
-                              )}
-                            </div>
-                          ) : (
-                            <div className="text-gray-500">暂无目录结构</div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* 更新时间 */}
-                      <div className="text-xs text-gray-400 text-center pt-2 border-t border-[var(--white-light)]">
-                        最后更新: {blogStats.lastUpdated}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <div className="animate-spin w-6 h-6 border-2 border-[var(--primary-end)] border-t-transparent rounded-full mx-auto mb-2"></div>
-                      <p className="text-gray-400 text-sm">加载统计信息中...</p>
-                    </div>
-                  )}
-                </div>
-              </div>
+              {/* 文章列表内容 */}
+              <ArticleListView
+                articles={articles}
+                categories={categories}
+                searchTerm={searchTerm}
+                selectedCategory={selectedCategory}
+                onSearchChange={setSearchTerm}
+                onCategorySelect={setSelectedCategory}
+                onArticleClick={openArticle}
+              />
             </div>
           </div>
 
-          {/* 文章详情视图 - 响应式优化 */}
+          {/* 文章详情视图 */}
           {selectedArticle && (
-            <div
-              className={`transition-all bg-[rgba(0,0,0,.1)] duration-300 p-10 rounded-lg ${
-                isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
-              }`}
-            >
-              <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-4 lg:gap-8">
-                {/* 文章内容 */}
-                <div className="flex-1 order-2 lg:order-1">
-                  {/* 返回按钮 */}
-                  <button
-                    onClick={backToList}
-                    className="mb-4 lg:mb-6 bg-[var(--black-light)] hover:bg-[rgba(0,0,0,0.4)] rounded-lg px-3 py-2 lg:px-4 lg:py-2 text-white transition-colors flex items-center gap-2 text-sm lg:text-base"
-                  >
-                    <SvgIcon name="left" width={16} height={16} color="#fff" />
-                    返回文章列表
-                  </button>
-
-                  {/* 文章头部 */}
-                  <div className="mb-4 lg:mb-6">
-                    <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3 lg:mb-4 leading-tight">
-                      {selectedArticle.title}
-                    </h1>
-                    <div className="flex flex-wrap items-center gap-2 lg:gap-4 text-gray-300 mb-3 lg:mb-4 text-sm lg:text-base">
-                      <span>{selectedArticle.date}</span>
-                      <span className="hidden sm:inline">•</span>
-                      <span>{selectedArticle.readTime}</span>
-                      <span className="hidden sm:inline">•</span>
-                      <span>{selectedArticle.category}</span>
-                      <span className="hidden md:inline">•</span>
-                      <span className="hidden md:inline">
-                        {selectedArticle.filename}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* 文章内容或 PDF 预览 */}
-                  {isPdfArticle(selectedArticle) ? (
-                    <div className="w-full">
-                      <PdfViewer
-                        file={
-                          selectedArticle.category === "根目录"
-                            ? `/api/pdf/${selectedArticle.filename}`
-                            : `/api/pdf/${selectedArticle.category}/${selectedArticle.filename}`
-                        }
-                      />
-                    </div>
-                  ) : (
-                    <div className="prose prose-invert max-w-none prose-sm lg:prose-base">
-                      {renderMarkdown(selectedArticle.content)}
-                    </div>
-                  )}
-                </div>
-
-                {/* 目录 - 响应式处理 */}
-                {tableOfContents.length > 0 && (
-                  <div className="w-full max-w-[300px] order-1 lg:order-2 lg:sticky lg:top-20 lg:h-fit">
-                    <div className="bg-[var(--black-light)] rounded-lg p-3 lg:p-4 border border-[var(--white-light)]">
-                      <h3 className="text-base lg:text-lg font-bold text-white mb-3 lg:mb-4">
-                        目录
-                      </h3>
-                      <nav className="lg:block">
-                        {/* 移动端折叠目录 */}
-                        <div className="lg:hidden">
-                          <details className="group">
-                            <summary className="cursor-pointer text-sm text-gray-300 hover:text-white transition-colors list-none flex items-center justify-between">
-                              <span>展开目录</span>
-                              <SvgIcon
-                                name="down"
-                                width={16}
-                                height={16}
-                                color="#9CA3AF"
-                                className="group-open:rotate-180 transition-transform"
-                              />
-                            </summary>
-                            <div className="mt-2 max-h-60 overflow-y-auto custom-scrollbar overflow-x-hidden">
-                              {tableOfContents.map((item) => (
-                                <button
-                                  key={item.id}
-                                  onClick={() => scrollToHeading(item.id)}
-                                  className={`block w-full text-left py-2 px-2 text-sm hover:bg-[rgba(255,255,255,.1)] rounded transition-colors relative ${
-                                    activeHeading === item.id
-                                      ? "text-[#214362] font-semibold"
-                                      : item.level === 1
-                                        ? "text-white font-medium"
-                                        : item.level === 2
-                                          ? "text-gray-300 ml-4"
-                                          : "text-gray-400 ml-8"
-                                  }`}
-                                >
-                                  {activeHeading === item.id && (
-                                    <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-4 bg-[#214362] rounded-r"></span>
-                                  )}
-                                  <span
-                                    className={
-                                      activeHeading === item.id ? "ml-3" : ""
-                                    }
-                                  >
-                                    {item.title}
-                                  </span>
-                                </button>
-                              ))}
-                            </div>
-                          </details>
-                        </div>
-
-                        {/* 桌面端展开目录 */}
-                        <div className="hidden lg:block">
-                          {tableOfContents.map((item) => (
-                            <button
-                              key={item.id}
-                              onClick={() => scrollToHeading(item.id)}
-                              className={`block w-full text-left py-2 px-2 text-sm hover:bg-[rgba(255,255,255,.1)] rounded transition-colors relative ${
-                                activeHeading === item.id
-                                  ? "text-[#1E2939] font-semibold pl-4"
-                                  : item.level === 1
-                                    ? "text-white font-medium"
-                                    : item.level === 2
-                                      ? "text-gray-300 ml-4"
-                                      : "text-gray-400 ml-8"
-                              }`}
-                            >
-                              {activeHeading === item.id && (
-                                <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-4 bg-[#1E2939] rounded-r"></span>
-                              )}
-                              <span
-                                className={activeHeading === item.id ? "" : ""}
-                              >
-                                {item.title}
-                              </span>
-                            </button>
-                          ))}
-                        </div>
-                      </nav>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+            <ArticleDetailView
+              article={selectedArticle}
+              tableOfContents={tableOfContents}
+              activeHeading={activeHeading}
+              isTransitioning={isTransitioning}
+              categories={categories}
+              selectedCategory={selectedCategory}
+              blogStats={blogStats}
+              collapsedFolders={collapsedFolders}
+              onBack={backToList}
+              onHeadingClick={scrollToHeading}
+              onCategorySelect={setSelectedCategory}
+              toggleFolder={toggleFolder}
+              onFileClick={handleFileClick}
+            />
           )}
         </div>
 
