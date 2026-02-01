@@ -255,7 +255,7 @@ export default function Home() {
                         return (
                           <span
                             key={wordIndex}
-                            className="bg-gradient-to-br from-[#FF8C00] to-[#FF416C] bg-clip-text text-transparent"
+                            className="bg-gradient-to-br from-[var(--orange-start)] to-[var(--orange-end)] bg-clip-text text-transparent"
                           >
                             {word}
                           </span>
@@ -270,30 +270,30 @@ export default function Home() {
                         </span>
                       );
                     })}
-                    <span className="animate-pulse text-[#FF416C]">|</span>
+                    <span className="animate-pulse text-[var(--orange-end)]">|</span>
                   </span>
                 </div>
                 <div className="text-shadow-sm text-[#fff] text-[14px] md:text-[16px]">
-                  <span className="bg-gradient-to-br from-[#FF8C00] to-[#FF416C] bg-clip-text text-transparent text-[16px] md:text-[18px]">
+                  <span className="bg-gradient-to-br from-[var(--orange-start)] to-[var(--orange-end)] bg-clip-text text-transparent text-[16px] md:text-[18px]">
                     Front-end
                   </span>{" "}
                   development (前端开发工程师)
                 </div>
                 <div className="text-shadow-sm text-[#fff] text-[14px] md:text-[16px]">
-                  <span className="bg-gradient-to-br from-[#FF8C00] to-[#FF416C] bg-clip-text text-transparent text-[16px] md:text-[18px]">
+                  <span className="bg-gradient-to-br from-[var(--orange-start)] to-[var(--orange-end)] bg-clip-text text-transparent text-[16px] md:text-[18px]">
                     22
                   </span>{" "}
                   years old (22岁)
                 </div>
                 <div className="text-shadow-sm text-[#fff] text-[14px] md:text-[16px]">
-                  <span className="bg-gradient-to-br from-[#FF8C00] to-[#FF416C] bg-clip-text text-transparent text-[16px] md:text-[18px]">
+                  <span className="bg-gradient-to-br from-[var(--orange-start)] to-[var(--orange-end)] bg-clip-text text-transparent text-[16px] md:text-[18px]">
                     2.5
                   </span>{" "}
                   work experience (2.5年工作经验)
                 </div>
                 <div className="flex mt-[10px] gap-[10px] justify-center md:justify-start">
                   <div
-                    className="bg-[rgba(0,0,0,.5)] rounded-[5px] p-[8px] cursor-pointer"
+                    className="bg-[var(--black-medium)] rounded-[5px] p-[8px] cursor-pointer"
                     onClick={handleGithubClick}
                   >
                     <SvgIcon
@@ -304,7 +304,7 @@ export default function Home() {
                     />
                   </div>
                   <div
-                    className="bg-[rgba(0,0,0,.5)] rounded-[5px] p-[8px] cursor-pointer"
+                    className="bg-[var(--black-medium)] rounded-[5px] p-[8px] cursor-pointer"
                     onClick={handleQQClick}
                   >
                     <SvgIcon name="qq" width={20} height={20} color="#fff" />
@@ -319,7 +319,7 @@ export default function Home() {
               <div className="flex order-2 md:order-1 w-full md:w-auto">
                 <div className="flex flex-col gap-[10px] w-full md:w-[250px]">
                   <div className="flex gap-[10px] flex-col flex-row">
-                    <div className="bg-[rgba(0,0,0,.3)] rounded-[5px] p-[10px] text-[#fff] text-[14px] gap-[10px] flex flex-col flex-1">
+                    <div className="bg-[var(--pink-bg)] rounded-[5px] p-[10px] text-[#fff] text-[14px] gap-[10px] flex flex-col flex-1">
                       <div className="flex items-center gap-[5px]">
                         <SvgIcon
                           name="address"
@@ -339,7 +339,7 @@ export default function Home() {
                         在职
                       </div>
                     </div>
-                    <div className="bg-[rgba(0,0,0,.3)] rounded-[5px] p-[10px] text-[#fff] text-[14px] gap-[10px] flex flex-col flex-1">
+                    <div className="bg-[var(--pink-bg)] rounded-[5px] p-[10px] text-[#fff] text-[14px] gap-[10px] flex flex-col flex-1">
                       <div className="flex items-center gap-[5px]">
                         <SvgIcon
                           name="address"
@@ -360,10 +360,10 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                  <div className="bg-[rgba(0,0,0,.3)] rounded-[5px] p-[10px] text-[#fff] gap-[10px] flex flex-wrap text-[12px]">
+                  <div className="bg-[var(--pink-bg)] rounded-[5px] p-[10px] text-[#fff] gap-[10px] flex flex-wrap text-[12px]">
                     {tags.map((tag) => (
                       <div
-                        className="bg-[rgba(255,255,255,.1)] rounded-[5px] p-[5px] w-fit cursor-pointer hover:bg-[rgba(255,255,255,.2)] transition-all duration-200 transform hover:scale-105"
+                        className="bg-[var(--white-light)] rounded-[5px] p-[5px] w-fit cursor-pointer hover:bg-[var(--white-medium)] transition-all duration-200 transform hover:scale-105"
                         key={tag.name}
                         onClick={() => handleTagClick(tag.name)}
                       >
@@ -371,7 +371,7 @@ export default function Home() {
                       </div>
                     ))}
                   </div>
-                  <div className="bg-[rgba(0,0,0,.3)] rounded-[5px] p-[10px] text-[#fff] text-[14px] gap-[10px] flex flex-col">
+                  <div className="bg-[var(--pink-bg)] rounded-[5px] p-[10px] text-[#fff] text-[14px] gap-[10px] flex flex-col">
                     <div className="relative">
                       {express.map((item, index) => (
                         <div
@@ -383,13 +383,13 @@ export default function Home() {
                             <div
                               className={`w-[12px] h-[12px] rounded-full border-2 border-white ${
                                 index === express.length - 1
-                                  ? "bg-[#3d85a9]"
-                                  : "bg-[#1b2c55]"
+                                  ? "bg-[var(--primary-end)]"
+                                  : "bg-[var(--primary-start)]"
                               }`}
                             ></div>
                             {/* 连接线 */}
                             {index < express.length - 1 && (
-                              <div className="w-[2px] h-[40px] bg-gradient-to-b from-[#FF8C00] to-[#FF416C] mt-[5px]"></div>
+                              <div className="w-[2px] h-[40px] bg-gradient-to-b from-[var(--orange-start)] to-[var(--orange-end)] mt-[5px]"></div>
                             )}
                           </div>
 
@@ -414,7 +414,7 @@ export default function Home() {
                   <GitHubHeatmap username="Max-Samson" year={2026} />
                 </div>
 
-                <div className="bg-[rgba(0,0,0,.3)] rounded-[5px] p-[10px] text-[#fff] text-[14px] gap-[10px] flex flex-col">
+                <div className="bg-[var(--pink-bg)] rounded-[5px] p-[10px] text-[#fff] text-[14px] gap-[10px] flex flex-col">
                   <div className="font-bold text-[16px] flex items-center gap-[5px]">
                     <SvgIcon name="site" width={20} height={20} color="#fff" />
                     <div className="flex flex-col">
@@ -425,7 +425,7 @@ export default function Home() {
                   <div className="flex gap-[10px] flex-col sm:flex-row">
                     <Link
                       href="/works"
-                      className="bg-[rgba(0,0,0,.3)] rounded-[5px] p-[10px] text-[#fff] text-[14px] gap-[10px] flex flex-col cursor-pointer flex-1"
+                      className="bg-[var(--pink-bg)] rounded-[5px] p-[10px] text-[#fff] text-[14px] gap-[10px] flex flex-col cursor-pointer flex-1"
                     >
                       <div className="flex justify-between items-center">
                         作品集
@@ -440,7 +440,7 @@ export default function Home() {
                     </Link>
                     <Link
                       href="/blog"
-                      className="bg-[rgba(0,0,0,.3)] rounded-[5px] p-[10px] text-[#fff] text-[14px] gap-[10px] flex flex-col cursor-pointer flex-1"
+                      className="bg-[var(--pink-bg)] rounded-[5px] p-[10px] text-[#fff] text-[14px] gap-[10px] flex flex-col cursor-pointer flex-1"
                     >
                       <div className="flex justify-between items-center">
                         文章
@@ -455,7 +455,7 @@ export default function Home() {
                     </Link>
                     <Link
                       href="/chat"
-                      className="bg-[rgba(0,0,0,.3)] rounded-[5px] p-[10px] text-[#fff] text-[14px] gap-[10px] flex flex-col cursor-pointer flex-1"
+                      className="bg-[var(--pink-bg)] rounded-[5px] p-[10px] text-[#fff] text-[14px] gap-[10px] flex flex-col cursor-pointer flex-1"
                     >
                       <div className="flex justify-between items-center">
                         聊天室
@@ -481,7 +481,7 @@ export default function Home() {
           <div className="fixed bottom-8 right-8 z-10">
             <Link
               href="/works"
-              className="bg-[rgba(0,0,0,.5)] hover:bg-[rgba(0,0,0,.7)] rounded-[5px] p-[8px] cursor-pointer transition-all duration-200 flex items-center gap-2 text-white backdrop-blur-sm"
+              className="bg-[var(--black-medium)] hover:bg-[var(--black-heavy)] rounded-[5px] p-[8px] cursor-pointer transition-all duration-200 flex items-center gap-2 text-white backdrop-blur-sm"
             >
               <span className="text-sm">作品集</span>
               <SvgIcon name="right" width={20} height={20} color="#fff" />

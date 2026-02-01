@@ -203,7 +203,7 @@ export default function Works() {
                       {selectedWork.tech.map((tech: string, index: number) => (
                         <span
                           key={index}
-                          className="bg-[rgba(0,0,0,.5)] text-white text-xs md:text-sm px-3 md:px-4 py-2 rounded-full"
+                          className="bg-[var(--black-medium)] text-white text-xs md:text-sm px-3 md:px-4 py-2 rounded-full"
                         >
                           {tech}
                         </span>
@@ -223,7 +223,7 @@ export default function Works() {
                             key={index}
                             className="flex items-center gap-3 text-[rgba(255,255,255,0.8)] bg-[rgba(255,255,255,0.05)] p-3 rounded-lg"
                           >
-                            <div className="w-2 h-2 bg-gradient-to-br from-[#1b2c55] to-[#3d85a9] rounded-full flex-shrink-0" />
+                            <div className="w-2 h-2 bg-gradient-to-br from-[var(--primary-start)] to-[var(--primary-end)] rounded-full flex-shrink-0" />
                             <span className="text-sm md:text-base">
                               {feature}
                             </span>
@@ -375,7 +375,7 @@ export default function Works() {
         <div className="fixed top-2 md:top-4 left-2 md:left-4 z-10 font-[family-name:var(--font-geist-sans)]">
           <Link
             href="/"
-            className="bg-[rgba(0,0,0,.5)] hover:bg-[rgba(0,0,0,.7)] rounded-[5px] p-[6px] md:p-[8px] cursor-pointer transition-all duration-200 flex items-center gap-1 md:gap-2 text-white backdrop-blur-sm"
+            className="bg-[var(--black-medium)] hover:bg-[var(--black-heavy)] rounded-[5px] p-[6px] md:p-[8px] cursor-pointer transition-all duration-200 flex items-center gap-1 md:gap-2 text-white backdrop-blur-sm"
           >
             <SvgIcon
               name="left"
@@ -396,7 +396,7 @@ export default function Works() {
               onClick={() => scrollToSection(index)}
               className={`w-1 h-2 md:h-3 rounded-full transition-all duration-300 ${
                 currentSection === index
-                  ? "bg-gradient-to-br from-[#1b2c55] to-[#3d85a9] scale-125"
+                  ? "bg-gradient-to-br from-[var(--primary-start)] to-[var(--primary-end)] scale-125"
                   : "bg-[rgba(255,255,255,0.5)] hover:bg-[rgba(255,255,255,0.8)]"
               }`}
               title={index < works.length ? `项目 ${index + 1}` : "联系我"}
@@ -436,7 +436,7 @@ export default function Works() {
                       {work.title.split(" ").map((word, wordIndex) => (
                         <span key={wordIndex}>
                           {wordIndex === 0 ? (
-                            <span className="bg-gradient-to-br from-[#1b2c55] to-[#3d85a9] bg-clip-text text-transparent">
+                            <span className="bg-gradient-to-br from-[var(--primary-start)] to-[var(--primary-end)] bg-clip-text text-transparent">
                               {word}
                             </span>
                           ) : (
@@ -462,7 +462,7 @@ export default function Works() {
                       {work.tech.map((tech, techIndex) => (
                         <span
                           key={techIndex}
-                          className="bg-[rgba(0,0,0,.5)] text-white text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-full border border-[rgba(255,255,255,0.2)] backdrop-blur-sm"
+                          className="bg-[var(--black-medium)] text-white text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-full border border-[var(--white-medium)] backdrop-blur-sm"
                         >
                           {tech}
                         </span>
@@ -481,7 +481,7 @@ export default function Works() {
                           key={featureIndex}
                           className="flex items-center gap-2 text-[rgba(255,255,255,0.8)]"
                         >
-                          <div className="w-2 h-2 bg-gradient-to-br from-[#1b2c55] to-[#3d85a9] rounded-full flex-shrink-0" />
+                          <div className="w-2 h-2 bg-gradient-to-br from-[var(--primary-start)] to-[var(--primary-end)] rounded-full flex-shrink-0" />
                           <span className="text-xs md:text-sm">{feature}</span>
                         </div>
                       ))}
@@ -493,7 +493,7 @@ export default function Works() {
                       {/* 查看详情按钮 */}
                       <button
                         onClick={() => openDrawer(work)}
-                        className="bg-gradient-to-br from-[#1b2c55] to-[#3d85a9] hover:from-[#2a3d66] hover:to-[#4e96ba] text-white py-2.5 md:py-3 px-4 md:px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 font-medium cursor-pointer text-sm md:text-base"
+                        className="bg-gradient-to-br from-[var(--primary-start)] to-[var(--primary-end)] hover:from-[var(--primary-hover-start)] hover:to-[var(--primary-hover-end)] text-white py-2.5 md:py-3 px-4 md:px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 font-medium cursor-pointer text-sm md:text-base"
                       >
                         <SvgIcon
                           name="docs"
@@ -511,7 +511,7 @@ export default function Works() {
                           <>
                             <button
                               onClick={() => window.open(work.link, "_blank")}
-                              className="bg-[rgba(0,0,0,.5)] hover:bg-[rgba(0,0,0,.7)] text-white py-2.5 md:py-3 px-4 md:px-6 rounded-lg transition-all duration-300 border border-[rgba(255,255,255,0.2)] backdrop-blur-sm flex items-center justify-center gap-2 cursor-pointer text-sm md:text-base"
+                              className="bg-[var(--black-medium)] hover:bg-[var(--black-heavy)] text-white py-2.5 md:py-3 px-4 md:px-6 rounded-lg transition-all duration-300 border border-[var(--white-medium)] backdrop-blur-sm flex items-center justify-center gap-2 cursor-pointer text-sm md:text-base"
                             >
                               <SvgIcon
                                 name="github"
@@ -532,7 +532,7 @@ export default function Works() {
                               onClick={() =>
                                 window.open(work.download_url, "_blank")
                               }
-                              className="bg-[rgba(0,0,0,.5)] hover:bg-[rgba(0,0,0,.7)] text-white py-2.5 md:py-3 px-4 md:px-6 rounded-lg transition-all duration-300 border border-[rgba(255,255,255,0.2)] backdrop-blur-sm flex items-center justify-center gap-2 cursor-pointer text-sm md:text-base"
+                              className="bg-[var(--black-medium)] hover:bg-[var(--black-heavy)] text-white py-2.5 md:py-3 px-4 md:px-6 rounded-lg transition-all duration-300 border border-[var(--white-medium)] backdrop-blur-sm flex items-center justify-center gap-2 cursor-pointer text-sm md:text-base"
                             >
                               <SvgIcon
                                 name="down"
@@ -573,8 +573,8 @@ export default function Works() {
                   </div>
 
                   {/* 装饰元素 */}
-                  <div className="absolute -top-2 md:-top-4 -right-2 md:-right-4 w-16 md:w-24 h-16 md:h-24 bg-gradient-to-br from-[#1b2c55] to-[#3d85a9] rounded-full opacity-20 blur-xl" />
-                  <div className="absolute -bottom-2 md:-bottom-4 -left-2 md:-left-4 w-20 md:w-32 h-20 md:h-32 bg-gradient-to-br from-[#3d85a9] to-[#1b2c55] rounded-full opacity-20 blur-xl" />
+                  <div className="absolute -top-2 md:-top-4 -right-2 md:-right-4 w-16 md:w-24 h-16 md:h-24 bg-gradient-to-br from-[var(--primary-start)] to-[var(--primary-end)] rounded-full opacity-20 blur-xl" />
+                  <div className="absolute -bottom-2 md:-bottom-4 -left-2 md:-left-4 w-20 md:w-32 h-20 md:h-32 bg-gradient-to-br from-[var(--primary-end)] to-[var(--primary-start)] rounded-full opacity-20 blur-xl" />
                 </div>
               </div>
             </section>
@@ -589,7 +589,7 @@ export default function Works() {
               <div className="space-y-3 md:space-y-4">
                 <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-[#fff] text-shadow-sm">
                   感兴趣的
-                  <span className="bg-gradient-to-br from-[#1b2c55] to-[#3d85a9] bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-br from-[var(--primary-start)] to-[var(--primary-end)] bg-clip-text text-transparent">
                     项目？
                   </span>
                 </h2>
@@ -603,7 +603,7 @@ export default function Works() {
                   onClick={() =>
                     window.open("https://github.com/Max-Samson", "_blank")
                   }
-                  className="bg-[rgba(0,0,0,.5)] hover:bg-[rgba(0,0,0,.7)] rounded-xl p-2 md:p-3 cursor-pointer transition-all duration-300 backdrop-blur-sm border border-[rgba(255,255,255,0.2)] group"
+                  className="bg-[var(--black-medium)] hover:bg-[var(--black-heavy)] rounded-xl p-2 md:p-3 cursor-pointer transition-all duration-300 backdrop-blur-sm border border-[var(--white-medium)] group"
                 >
                   <SvgIcon
                     name="github"
@@ -615,7 +615,7 @@ export default function Works() {
                 </button>
                 <button
                   onClick={handleQQClick}
-                  className="bg-[rgba(0,0,0,.5)] hover:bg-[rgba(0,0,0,.7)] rounded-xl p-2 md:p-3 cursor-pointer transition-all duration-300 backdrop-blur-sm border border-[rgba(255,255,255,0.2)] group"
+                  className="bg-[var(--black-medium)] hover:bg-[var(--black-heavy)] rounded-xl p-2 md:p-3 cursor-pointer transition-all duration-300 backdrop-blur-sm border border-[var(--white-medium)] group"
                 >
                   <SvgIcon
                     name="qq"
@@ -634,7 +634,7 @@ export default function Works() {
           href="/blog"
           className="fixed bottom-4 md:bottom-8 right-4 md:right-8 z-10"
         >
-          <button className="bg-[rgba(0,0,0,.5)] hover:bg-[rgba(0,0,0,.7)] rounded-[5px] p-[6px] md:p-[8px] cursor-pointer transition-all duration-200 flex items-center gap-1 md:gap-2 text-white backdrop-blur-sm">
+          <button className="bg-[var(--black-medium)] hover:bg-[var(--black-heavy)] rounded-[5px] p-[6px] md:p-[8px] cursor-pointer transition-all duration-200 flex items-center gap-1 md:gap-2 text-white backdrop-blur-sm">
             <span className="text-xs md:text-sm">文章</span>
             <SvgIcon
               name="right"

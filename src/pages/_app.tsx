@@ -3,9 +3,11 @@ import type { AppProps } from "next/app";
 import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import ThemeToggle from "@/components/ThemeToggle";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 import CommentModal from "@/components/CommentModal";
 import { useState, useEffect } from "react";
 import SvgIcon from "@/components/SvgIcon";
+import { initTheme } from "@/lib/theme";
 import {
   commentAPI,
   reactionAPI,
@@ -18,6 +20,11 @@ import { useRouter } from "next/router";
 function Layout({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme();
   const router = useRouter();
+
+  // 初始化主题
+  useEffect(() => {
+    initTheme();
+  }, []);
   const [isCommentOpen, setIsCommentOpen] = useState(false);
 
   const [commentCount, setCommentCount] = useState(0);
@@ -122,6 +129,9 @@ function Layout({ children }: { children: React.ReactNode }) {
     <div className="relative min-h-screen">
       {/* 主题切换按钮 */}
       <ThemeToggle />
+
+      {/* 配色主题切换器 */}
+      <ThemeSwitcher />
 
       {/* 浅色主题背景图片 */}
       <div

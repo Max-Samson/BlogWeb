@@ -193,7 +193,7 @@ const TypewriterText = ({ text }: { text: string }) => {
           return (
             <span
               key={wordIndex}
-              className="bg-gradient-to-br from-[#1b2c55] to-[#3d85a9] bg-clip-text text-transparent"
+              className="bg-gradient-to-br from-[var(--primary-start)] to-[var(--primary-end)] bg-clip-text text-transparent"
             >
               {word}
             </span>
@@ -206,7 +206,7 @@ const TypewriterText = ({ text }: { text: string }) => {
           </span>
         );
       })}
-      <span className="animate-pulse text-[#3d85a9] pl-[10px] pb-[4px]">|</span>
+      <span className="animate-pulse text-[var(--primary-end)] pl-[10px] pb-[4px]">|</span>
     </span>
   );
 };
@@ -811,7 +811,7 @@ export default function Blog() {
             <div className="max-w-7xl mx-auto flex gap-4 h-[80vh]">
               {/* 左侧分类面板 */}
               <div className="w-64 sticky top-45 h-fit hidden sm:block">
-                <div className="bg-[rgba(0,0,0,.3)] rounded-lg p-4 border border-[rgba(255,255,255,.1)]">
+                <div className="bg-[var(--black-light)] rounded-lg p-4 border border-[var(--white-light)]">
                   <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                     <SvgIcon name="tag" width={20} height={20} color="#fff" />
                     文章分类
@@ -823,8 +823,8 @@ export default function Blog() {
                         onClick={() => setSelectedCategory(category)}
                         className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-between ${
                           selectedCategory === category
-                            ? "bg-[#3d85a9] text-white shadow-lg"
-                            : "bg-[rgba(0,0,0,.2)] text-gray-300 hover:bg-[rgba(0,0,0,.4)] border border-[rgba(255,255,255,.05)]"
+                            ? "bg-[var(--primary-end)] text-white shadow-lg"
+                            : "bg-[rgba(0,0,0,.2)] text-gray-300 hover:bg-[rgba(0,0,0,0.4)] border border-[rgba(255,255,255,.05)]"
                         }`}
                       >
                         <span>{category}</span>
@@ -861,7 +861,7 @@ export default function Blog() {
                         placeholder="搜索文章标题、内容或标签..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full px-4 py-3 pl-12 bg-[rgba(0,0,0,.3)] border border-[rgba(255,255,255,.1)] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#3d85a9] transition-colors"
+                        className="w-full px-4 py-3 pl-12 bg-[var(--black-light)] border border-[var(--white-light)] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[var(--primary-end)] transition-colors"
                       />
                       <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
                         <SvgIcon
@@ -884,8 +884,8 @@ export default function Blog() {
                         onClick={() => setSelectedCategory(category)}
                         className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                           selectedCategory === category
-                            ? "bg-[#3d85a9] text-white shadow-lg"
-                            : "bg-[rgba(0,0,0,.3)] text-gray-300 hover:bg-[rgba(0,0,0,.5)] border border-[rgba(255,255,255,.1)]"
+                            ? "bg-[var(--primary-end)] text-white shadow-lg"
+                            : "bg-[var(--black-light)] text-gray-300 hover:bg-[rgba(0,0,0,.5)] border border-[var(--white-light)]"
                         }`}
                       >
                         {category}
@@ -915,10 +915,10 @@ export default function Blog() {
                     <div
                       key={article.id}
                       onClick={() => openArticle(article)}
-                      className="bg-[rgba(0,0,0,.3)] rounded-lg p-4 cursor-pointer hover:bg-[rgba(0,0,0,.4)] transition-all duration-200 border border-[rgba(255,255,255,.1)] hover:border-[#3d85a9] group"
+                      className="bg-[var(--black-light)] rounded-lg p-4 cursor-pointer hover:bg-[rgba(0,0,0,0.4)] transition-all duration-200 border border-[var(--white-light)] hover:border-[var(--primary-end)] group"
                     >
                       <div className="flex justify-between items-start mb-1">
-                        <h2 className="text-xl font-bold text-white group-hover:text-[#3d85a9] transition-colors">
+                        <h2 className="text-xl font-bold text-white group-hover:text-[var(--primary-end)] transition-colors">
                           {article.title}
                         </h2>
                         <div className="flex flex-col items-end gap-1">
@@ -975,7 +975,7 @@ export default function Blog() {
 
               {/* 右侧统计面板 */}
               <div className="w-80 sticky top-49 h-fit hidden lg:block">
-                <div className="bg-[rgba(0,0,0,.3)] rounded-lg p-3 border border-[rgba(255,255,255,.1)]">
+                <div className="bg-[var(--black-light)] rounded-lg p-3 border border-[var(--white-light)]">
                   <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
                     <SvgIcon name="count" width={20} height={20} color="#fff" />
                     博客统计
@@ -1040,7 +1040,7 @@ export default function Blog() {
                                 <div className="flex items-center gap-2">
                                   <div className="w-16 h-2 bg-[rgba(255,255,255,.1)] rounded-full overflow-hidden">
                                     <div
-                                      className="h-full bg-gradient-to-r from-[#3d85a9] to-[#1b2c55] rounded-full transition-all duration-300"
+                                      className="h-full bg-gradient-to-r from-[var(--primary-end)] to-[var(--primary-start)] rounded-full transition-all duration-300"
                                       style={{
                                         width: `${
                                           (count / blogStats.totalArticles) *
@@ -1087,13 +1087,13 @@ export default function Blog() {
                       </div>
 
                       {/* 更新时间 */}
-                      <div className="text-xs text-gray-400 text-center pt-2 border-t border-[rgba(255,255,255,.1)]">
+                      <div className="text-xs text-gray-400 text-center pt-2 border-t border-[var(--white-light)]">
                         最后更新: {blogStats.lastUpdated}
                       </div>
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <div className="animate-spin w-6 h-6 border-2 border-[#3d85a9] border-t-transparent rounded-full mx-auto mb-2"></div>
+                      <div className="animate-spin w-6 h-6 border-2 border-[var(--primary-end)] border-t-transparent rounded-full mx-auto mb-2"></div>
                       <p className="text-gray-400 text-sm">加载统计信息中...</p>
                     </div>
                   )}
@@ -1115,7 +1115,7 @@ export default function Blog() {
                   {/* 返回按钮 */}
                   <button
                     onClick={backToList}
-                    className="mb-4 lg:mb-6 bg-[rgba(0,0,0,.3)] hover:bg-[rgba(0,0,0,.4)] rounded-lg px-3 py-2 lg:px-4 lg:py-2 text-white transition-colors flex items-center gap-2 text-sm lg:text-base"
+                    className="mb-4 lg:mb-6 bg-[var(--black-light)] hover:bg-[rgba(0,0,0,0.4)] rounded-lg px-3 py-2 lg:px-4 lg:py-2 text-white transition-colors flex items-center gap-2 text-sm lg:text-base"
                   >
                     <SvgIcon name="left" width={16} height={16} color="#fff" />
                     返回文章列表
@@ -1160,7 +1160,7 @@ export default function Blog() {
                 {/* 目录 - 响应式处理 */}
                 {tableOfContents.length > 0 && (
                   <div className="w-full max-w-[300px] order-1 lg:order-2 lg:sticky lg:top-20 lg:h-fit">
-                    <div className="bg-[rgba(0,0,0,.3)] rounded-lg p-3 lg:p-4 border border-[rgba(255,255,255,.1)]">
+                    <div className="bg-[var(--black-light)] rounded-lg p-3 lg:p-4 border border-[var(--white-light)]">
                       <h3 className="text-base lg:text-lg font-bold text-white mb-3 lg:mb-4">
                         目录
                       </h3>

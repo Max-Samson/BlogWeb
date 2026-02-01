@@ -1,8 +1,160 @@
 @import "tailwindcss";
 
 :root {
+  /* 基础颜色 */
   --background: #ffffff;
   --foreground: #171717;
+
+  /* 系统主色 */
+  --primary-start: #1b2c55;
+  --primary-end: #3d85a9;
+  --primary-hover-start: #2a3d66;
+  --primary-hover-end: #4e96ba;
+
+  /* 粉色系 */
+  --pink-base: 255, 105, 135;
+  --pink-bg: rgba(var(--pink-base), 0.3);
+  --pink-bg-hover: rgba(var(--pink-base), 0.5);
+
+  /* 黑色半透明系 */
+  --black-light: rgba(0, 0, 0, 0.3);
+  --black-medium: rgba(0, 0, 0, 0.5);
+  --black-heavy: rgba(0, 0, 0, 0.7);
+
+  /* 白色半透明系 */
+  --white-light: rgba(255, 255, 255, 0.1);
+  --white-medium: rgba(255, 255, 255, 0.2);
+  --white-heavy: rgba(255, 255, 255, 0.6);
+
+  /* 渐变色 - 橙色系（用于高亮） */
+  --orange-start: #FF8C00;
+  --orange-end: #FF416C;
+
+  /* 边框颜色 */
+  --border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ========== 10种主题配色方案 ========== */
+
+/* 默认主题 */
+:root:not([data-theme]) {
+  --primary-start: #1b2c55;
+  --primary-end: #3d85a9;
+  --primary-hover-start: #2a3d66;
+  --primary-hover-end: #4e96ba;
+  --pink-base: 255, 105, 135;
+  --orange-start: #FF8C00;
+  --orange-end: #FF416C;
+}
+
+/* 1. 默认蓝色主题 (Default Blue) */
+:root[data-theme="default-blue"] {
+  --primary-start: #1b2c55;
+  --primary-end: #3d85a9;
+  --primary-hover-start: #2a3d66;
+  --primary-hover-end: #4e96ba;
+  --pink-base: 59, 130, 246;
+  --orange-start: #FF8C00;
+  --orange-end: #FF416C;
+}
+
+/* 2. 紫罗兰主题 (Violet) */
+:root[data-theme="violet"] {
+  --primary-start: #5B21B6;
+  --primary-end: #8B5CF6;
+  --primary-hover-start: #6D28D9;
+  --primary-hover-end: #A78BFA;
+  --pink-base: 139, 92, 246;
+  --orange-start: #EC4899;
+  --orange-end: #F472B6;
+}
+
+/* 3. 翡翠主题 (Emerald) */
+:root[data-theme="emerald"] {
+  --primary-start: #047857;
+  --primary-end: #10B981;
+  --primary-hover-start: #059669;
+  --primary-hover-end: #34D399;
+  --pink-base: 16, 185, 129;
+  --orange-start: #F59E0B;
+  --orange-end: #FBBF24;
+}
+
+/* 4. 玫瑰主题 (Rose) */
+:root[data-theme="rose"] {
+  --primary-start: #BE123C;
+  --primary-end: #FB7185;
+  --primary-hover-start: #E11D48;
+  --primary-hover-end: #FDA4AF;
+  --pink-base: 251, 113, 133;
+  --orange-start: #F43F5E;
+  --orange-end: #FB7185;
+}
+
+/* 5. 蓝色海洋主题 (Ocean Blue) */
+:root[data-theme="ocean"] {
+  --primary-start: #0EA5E9;
+  --primary-end: #06B6D4;
+  --primary-hover-start: #0284C7;
+  --primary-hover-end: #22D3EE;
+  --pink-base: 14, 165, 233;
+  --orange-start: #F97316;
+  --orange-end: #FB923C;
+}
+
+/* 6. 琥珀主题 (Amber) */
+:root[data-theme="amber"] {
+  --primary-start: #D97706;
+  --primary-end: #F59E0B;
+  --primary-hover-start: #B45309;
+  --primary-hover-end: #FBBF24;
+  --pink-base: 251, 191, 36;
+  --orange-start: #EF4444;
+  --orange-end: #F87171;
+}
+
+/* 7. 靛蓝主题 (Indigo) */
+:root[data-theme="indigo"] {
+  --primary-start: #3730A3;
+  --primary-end: #6366F1;
+  --primary-hover-start: #4338CA;
+  --primary-hover-end: #818CF8;
+  --pink-base: 99, 102, 241;
+  --orange-start: #8B5CF6;
+  --orange-end: #A78BFA;
+}
+
+/* 8. 青色主题 (Cyan) */
+:root[data-theme="cyan"] {
+  --primary-start: #0891B2;
+  --primary-end: #06B6D4;
+  --primary-hover-start: #0E7490;
+  --primary-hover-end: #22D3EE;
+  --pink-base: 6, 182, 212;
+  --orange-start: #14B8A6;
+  --orange-end: #2DD4BF;
+}
+
+/* 9. 森林主题 (Forest) */
+:root[data-theme="forest"] {
+  --primary-start: #14532D;
+  --primary-end: #22C55E;
+  --primary-hover-start: #166534;
+  --primary-hover-end: #4ADE80;
+  --pink-base: 34, 197, 94;
+  --orange-start: #84CC16;
+  --orange-end: #A3E635;
+}
+
+/* 10. 落日主题 (Sunset) */
+:root[data-theme="sunset"] {
+  --primary-start: #DC2626;
+  --primary-end: #F97316;
+  --primary-hover-start: #EF4444;
+  --primary-hover-end: #FB923C;
+  --pink-base: 249, 115, 22;
+  --orange-start: #F59E0B;
+  --orange-end: #FBBF24;
 }
 
 .dark {
@@ -15,6 +167,16 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* 系统色 - Tailwind 可用 */
+  --color-primary-start: var(--primary-start);
+  --color-primary-end: var(--primary-end);
+  --color-pink-bg: var(--pink-bg);
+  --color-black-light: var(--black-light);
+  --color-black-medium: var(--black-medium);
+  --color-black-heavy: var(--black-heavy);
+  --color-white-light: var(--white-light);
+  --color-white-medium: var(--white-medium);
 }
 
 body {
@@ -88,6 +250,38 @@ body {
 
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
+}
+
+/* 抽屉从下往上滑入动画 */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+/* PC端向下显示动画 */
+@keyframes slide-down {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.2s ease-out;
 }
 
 .loader {
@@ -233,5 +427,4 @@ body {
 .pt-safe-top {
   /* 使用动态视口高度单位 */
   padding-top: calc(100vh - 100dvh + env(safe-area-inset-top, 0px));
-  min-padding-top: env(safe-area-inset-top, 0px);
 }

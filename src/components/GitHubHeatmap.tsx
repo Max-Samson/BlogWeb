@@ -58,7 +58,7 @@ const GitHubHeatmap: React.FC<GitHubHeatmapProps> = ({ username, year }) => {
   const setCachedData = (
     username: string,
     year: number,
-    data: GitHubContributionsData
+    data: GitHubContributionsData,
   ) => {
     try {
       const cacheKey = getCacheKey(username, year);
@@ -73,27 +73,30 @@ const GitHubHeatmap: React.FC<GitHubHeatmapProps> = ({ username, year }) => {
   };
 
   // 使用 github-contributions-api 获取贡献数据
-  const fetchContributions = useCallback(async (username: string, year: number) => {
-    try {
-      const response = await fetch(
-        `https://github-contributions-api.jogruber.de/v4/${username}?y=${year}`
-      );
+  const fetchContributions = useCallback(
+    async (username: string, year: number) => {
+      try {
+        const response = await fetch(
+          `https://github-contributions-api.jogruber.de/v4/${username}?y=${year}`,
+        );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data: GitHubContributionsData = await response.json();
+
+        // 保存到缓存
+        setCachedData(username, year, data);
+
+        return data;
+      } catch (error) {
+        console.error("获取GitHub贡献数据失败:", error);
+        throw error;
       }
-
-      const data: GitHubContributionsData = await response.json();
-
-      // 保存到缓存
-      setCachedData(username, year, data);
-
-      return data;
-    } catch (error) {
-      console.error("获取GitHub贡献数据失败:", error);
-      throw error;
-    }
-  }, []);
+    },
+    [],
+  );
 
   useEffect(() => {
     const loadContributions = async () => {
@@ -202,9 +205,9 @@ const GitHubHeatmap: React.FC<GitHubHeatmapProps> = ({ username, year }) => {
 
   if (loading) {
     return (
-      <div className="bg-[rgba(0,0,0,.3)] rounded-[5px] p-[15px] text-[#fff] w-full max-w-full">
+      <div className="bg-[var(--pink-bg)] rounded-[5px] p-[15px] text-[#fff] w-full max-w-full">
         <div className="animate-pulse flex items-center gap-2">
-          <div className="w-4 h-4 bg-[#3d85a9] rounded animate-spin"></div>
+          <div className="w-4 h-4 bg-[var(--primary-end)] rounded animate-spin"></div>
           <span>加载GitHub贡献图...</span>
         </div>
       </div>
@@ -213,7 +216,7 @@ const GitHubHeatmap: React.FC<GitHubHeatmapProps> = ({ username, year }) => {
 
   if (error) {
     return (
-      <div className="bg-[rgba(0,0,0,.3)] rounded-[5px] p-[15px] text-[#fff] w-full max-w-full">
+      <div className="bg-[var(--pink-bg)] rounded-[5px] p-[15px] text-[#fff] w-full max-w-full">
         <div className="text-red-400">
           <div className="font-semibold mb-2">⚠️ 加载失败</div>
           <div className="text-sm">{error}</div>
@@ -223,7 +226,7 @@ const GitHubHeatmap: React.FC<GitHubHeatmapProps> = ({ username, year }) => {
   }
 
   return (
-    <div className="bg-[rgba(0,0,0,.3)] rounded-[5px] p-[10px] text-[#fff] overflow-x-auto custom-scrollbar">
+    <div className="bg-[var(--pink-bg)] rounded-[5px] p-[10px] text-[#fff] overflow-x-auto custom-scrollbar">
       <div className="mb-[12px]">
         <h3 className="text-[16px] font-semibold mb-[1px] flex items-center gap-2">
           <SvgIcon name="github" width={20} height={20} color="#fff" />

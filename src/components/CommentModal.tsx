@@ -188,7 +188,7 @@ export default function CommentModal({ isOpen, onClose }: CommentModalProps) {
               className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium ${
                 isAuthorComment
                   ? "bg-gradient-to-br from-yellow-400 to-orange-500"
-                  : "bg-gradient-to-br from-[#1b2c55] to-[#3d85a9]"
+                  : "bg-gradient-to-br from-[var(--primary-start)] to-[var(--primary-end)]"
               }`}
             >
               {(comment.nickname || "匿名用户").charAt(0).toUpperCase()}
