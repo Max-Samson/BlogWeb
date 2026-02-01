@@ -26,7 +26,7 @@
     "dev": "next dev --turbopack",
     "push-db": "npx prisma db push",
     "generate": "npx prisma generate",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && pnpm run count && next build",
     "postinstall": "prisma generate",
     "start": "next start",
     "lint": "next lint",
