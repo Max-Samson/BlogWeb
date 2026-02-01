@@ -26,6 +26,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     initTheme();
   }, []);
   const [isCommentOpen, setIsCommentOpen] = useState(false);
+  const [isReactionMenuOpen, setIsReactionMenuOpen] = useState(false);
 
   const [commentCount, setCommentCount] = useState(0);
   const [reactionCounts, setReactionCounts] = useState<ReactionCounts>({
@@ -151,159 +152,166 @@ function Layout({ children }: { children: React.ReactNode }) {
         }}
       />
 
-      {/* 点赞按钮 */}
-
+      {/* 反应按钮 - 一行左侧展开动画 */}
       {!isChatPage && (
-        <div className="fixed bottom-30 right-8 z-10">
-          <div className="flex justify-start text-1xl items-center shadow-xl z-10 bg-black/20 dark:bg-[#191818] gap-2 p-2 rounded-full transition-transform duration-300 hover:scale-105">
-            <button
-              onClick={() => handleReaction("like")}
-              disabled={hasReacted.like}
+        <div className="fixed bottom-32 right-8 z-50">
+          <div className="relative flex items-center">
+            {/* 一行展开的反应按钮容器（在开关按钮左侧，不遮挡右侧/下方） */}
+            <div
               className={`
-              relative group transition-all duration-200 ease-out
-              ${
-                hasReacted.like
-                  ? "cursor-not-allowed opacity-60"
-                  : "cursor-pointer hover:scale-110"
-              }
-              bg-white dark:bg-[#191818] rounded-full p-1 px-2 dark:bg-gray-700
-              transform hover:-translate-y-1
-            `}
+          absolute right-16 bottom-1/2 translate-y-1/2
+          flex items-center gap-3
+          transition-all duration-300 ease-out
+          ${
+            isReactionMenuOpen
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+          }
+        `}
             >
-              {/* 谢谢你动画 */}
-              {showThanks.like && (
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-                  <div className="text-white text-sm font-bold shadow-lg animate-pulse w-[100px]">
-                    谢谢你
-                  </div>
-                </div>
-              )}
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black dark:bg-white dark:text-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                Like{" "}
-                {reactionCounts.like > 0 &&
-                  `(${formatCount(reactionCounts.like)})`}
-              </div>
-              👍
-            </button>
+              {[
+                {
+                  type: "smile" as ReactionType,
+                  emoji: "🙂",
+                  label: "Smile",
+                  floatClass: "animate-float-0",
+                },
+                {
+                  type: "appreciate" as ReactionType,
+                  emoji: "✨",
+                  label: "Appreciate",
+                  floatClass: "animate-float-50",
+                },
+                {
+                  type: "celebrate" as ReactionType,
+                  emoji: "🎉",
+                  label: "Celebrate",
+                  floatClass: "animate-float-100",
+                },
+                {
+                  type: "cheer" as ReactionType,
+                  emoji: "👏🏻",
+                  label: "Cheer",
+                  floatClass: "animate-float-150",
+                },
+                {
+                  type: "like" as ReactionType,
+                  emoji: "👍",
+                  label: "Like",
+                  floatClass: "animate-float-200",
+                },
+              ].map(({ type, emoji, label, floatClass }, index) => (
+                <button
+                  key={type}
+                  onClick={() => handleReaction(type)}
+                  disabled={hasReacted[type]}
+                  className={`
+              group relative
+              transition-all duration-500 ease-out
+              ${hasReacted[type] ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
+            `}
+                  style={{
+                    // 依次弹出节奏
+                    transitionDelay: `${index * 70}ms`,
+                    // ✅ 滑入：从右往左滑入（因为按钮在左侧排列，滑入方向要从开关按钮“出来”）
+                    transform: isReactionMenuOpen
+                      ? "translateX(0px) translateY(0px) scale(1)"
+                      : "translateX(18px) translateY(6px) scale(0.85)",
+                  }}
+                >
+                  <div
+                    className={`
+                relative bg-white/90 dark:bg-[#2a2a2a]/90
+                backdrop-blur-sm shadow-xl
+                rounded-full w-13 h-13
+                flex items-center justify-center
+                transition-all duration-300
+                hover:shadow-2xl hover:scale-110 hover:bg-white dark:hover:bg-[#333]
+                ${hasReacted[type] ? "ring-2 ring-green-500 ring-opacity-50" : ""}
+                ${floatClass}
+              `}
+                  >
+                    {/* emoji 微调：视觉居中更舒服 */}
+                    <span className="text-2xl -translate-y-0.5">{emoji}</span>
 
-            <button
-              onClick={() => handleReaction("cheer")}
-              disabled={hasReacted.cheer}
-              className={`
-              relative group transition-all duration-200 ease-out
-              ${
-                hasReacted.cheer
-                  ? "cursor-not-allowed opacity-60"
-                  : "cursor-pointer hover:scale-110"
-              }
-              bg-white dark:bg-[#191818] rounded-full p-1 px-2 dark:bg-gray-700
-              transform hover:-translate-y-1
-            `}
-            >
-              {/* 谢谢你动画 */}
-              {showThanks.cheer && (
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-                  <div className="text-white text-sm font-bold shadow-lg animate-pulse w-[100px]">
-                    谢谢你
-                  </div>
-                </div>
-              )}
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black dark:bg-white dark:text-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                Cheer{" "}
-                {reactionCounts.cheer > 0 &&
-                  `(${formatCount(reactionCounts.cheer)})`}
-              </div>
-              👏🏻
-            </button>
+                    {/* 悬浮提示 */}
+                    <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/80 dark:bg-white/90 dark:text-black text-white text-xs px-2 py-1 rounded whitespace-nowrap pointer-events-none">
+                      {label}{" "}
+                      {reactionCounts[type] > 0 &&
+                        `(${formatCount(reactionCounts[type])})`}
+                    </div>
 
-            <button
-              onClick={() => handleReaction("celebrate")}
-              disabled={hasReacted.celebrate}
-              className={`
-              relative group transition-all duration-200 ease-out
-              ${
-                hasReacted.celebrate
-                  ? "cursor-not-allowed opacity-60"
-                  : "cursor-pointer hover:scale-110"
-              }
-              bg-white dark:bg-[#191818] rounded-full p-1 px-2 dark:bg-gray-700
-              transform hover:-translate-y-1
-            `}
-            >
-              {/* 谢谢你动画 */}
-              {showThanks.celebrate && (
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-                  <div className="text-white text-sm font-bold shadow-lg animate-pulse w-[100px]">
-                    谢谢你
-                  </div>
-                </div>
-              )}
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black dark:bg-white dark:text-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                Celebrate{" "}
-                {reactionCounts.celebrate > 0 &&
-                  `(${formatCount(reactionCounts.celebrate)})`}
-              </div>
-              🎉
-            </button>
+                    {/* 谢谢你动画 */}
+                    {showThanks[type] && (
+                      <div className="absolute -top-14 left-1/2 -translate-x-1/2 animate-bounce">
+                        <div className="text-white text-sm font-bold whitespace-nowrap bg-gradient-to-r from-pink-500 to-purple-500 px-3 py-1 rounded-full shadow-lg animate-pulse">
+                          谢谢你 ❤️
+                        </div>
+                      </div>
+                    )}
 
-            <button
-              onClick={() => handleReaction("appreciate")}
-              disabled={hasReacted.appreciate}
-              className={`
-              relative group transition-all duration-200 ease-out
-              ${
-                hasReacted.appreciate
-                  ? "cursor-not-allowed opacity-60"
-                  : "cursor-pointer hover:scale-110"
-              }
-              bg-white dark:bg-[#191818] rounded-full p-1 px-2 dark:bg-gray-700
-              transform hover:-translate-y-1
-            `}
-            >
-              {/* 谢谢你动画 */}
-              {showThanks.appreciate && (
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-                  <div className="text-white text-sm font-bold shadow-lg animate-pulse w-[100px]">
-                    谢谢你
+                    {/* 反应数量徽章 */}
+                    {reactionCounts[type] > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-lg">
+                        {formatCount(reactionCounts[type])}
+                      </span>
+                    )}
                   </div>
-                </div>
-              )}
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black dark:bg-white dark:text-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                Appreciate{" "}
-                {reactionCounts.appreciate > 0 &&
-                  `(${formatCount(reactionCounts.appreciate)})`}
-              </div>
-              ✨
-            </button>
+                </button>
+              ))}
+            </div>
 
+            {/* 主触发按钮 */}
             <button
-              onClick={() => handleReaction("smile")}
-              disabled={hasReacted.smile}
-              className={`
-              relative group transition-all duration-200 ease-out
-              ${
-                hasReacted.smile
-                  ? "cursor-not-allowed opacity-60"
-                  : "cursor-pointer hover:scale-110"
+              onClick={() => setIsReactionMenuOpen(!isReactionMenuOpen)}
+              aria-label={
+                isReactionMenuOpen ? "Close reactions" : "Open reactions"
               }
-              bg-white dark:bg-[#191818] rounded-full p-1 px-2 dark:bg-gray-700
-              transform hover:-translate-y-1
-            `}
+              className={`
+                  relative group z-10
+                  bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500
+                  hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600
+                  text-white shadow-xl hover:shadow-2xl
+                  rounded-full w-14 h-14
+                  flex items-center justify-center
+                  transition-all duration-300 ease-out
+                  hover:scale-110 active:scale-95
+                  ${isReactionMenuOpen ? "rotate-45" : "rotate-0"}
+                `}
             >
-              {/* 谢谢你动画 */}
-              {showThanks.smile && (
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-                  <div className="text-white text-sm font-bold shadow-lg animate-pulse w-[100px]">
-                    谢谢你
-                  </div>
-                </div>
-              )}
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black dark:bg-white dark:text-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                Smile{" "}
-                {reactionCounts.smile > 0 &&
-                  `(${formatCount(reactionCounts.smile)})`}
-              </div>
-              🙂
+              {/* ✅ 优化关闭叉号：不用 ✕ 字符，改成两条线组成的 X，更居中、更清晰 */}
+              <span className="relative block w-6 h-6">
+                {/* 打开态显示笑脸 */}
+                <span
+                  className={`
+              absolute inset-0 flex items-center justify-center text-2xl
+              transition-all duration-200
+              ${isReactionMenuOpen ? "opacity-0 scale-75" : "opacity-100 scale-100"}
+            `}
+                >
+                  😊
+                </span>
+
+                {/* 关闭态显示叉号（两条线），并且不受字体影响 */}
+                <span
+                  className={`
+              absolute inset-0
+              transition-all duration-200
+              ${isReactionMenuOpen ? "opacity-100 scale-100" : "opacity-0 scale-75"}
+            `}
+                >
+                  <span className="absolute left-1/2 top-1/2 w-6 h-[2px] -translate-x-1/2 -translate-y-1/2 bg-white rounded-full rotate-90" />
+                  <span className="absolute left-1/2 top-1/2 w-6 h-[2px] -translate-x-1/2 -translate-y-1/2 bg-white rounded-full" />
+                </span>
+              </span>
+
+              {/* 波纹动画 */}
+              <span
+                className={`
+            absolute inset-0 rounded-full bg-white/30
+            ${isReactionMenuOpen ? "animate-ping" : ""}
+          `}
+              />
             </button>
           </div>
         </div>
